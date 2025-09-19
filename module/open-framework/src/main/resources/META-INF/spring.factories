@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+me.liye.framework.datasource.DatasourceAutoConfigure,\
+me.liye.framework.datasource.id.IDGeneratorAutoConfigure
