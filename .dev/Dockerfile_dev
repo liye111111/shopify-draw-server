@@ -1,0 +1,5 @@
+FROM 10.10.11.140:5000/shopastro:base
+
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+COPY entrypoint.sh entrypoint.sh

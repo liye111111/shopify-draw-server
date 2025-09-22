@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{APP_NAME}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app.kubernetes.io/instance: {{APP_NAME}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{APP_NAME}}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{APP_NAME}}
+    spec:
+      containers:
+        - name: {{APP_NAME}}
+          command:
+            - sh
+            - /entrypoint.sh
+          image: "{{IMAGE}}"
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "100m"
+          imagePullPolicy: Always
+          env:
+            - name: APP_NAME
+              value: {{APP_NAME}}
+          envFrom:
+            - secretRef:
+                name: env-secrets
+            - configMapRef:
+                name: env-configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: debug
+              containerPort: 18000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 10
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name:  {{APP_NAME}}
+  namespace: {{NAMESPACE}}
+  annotations:
+   prometheus.io/scrape: "true"
+   prometheus.io/port: "8080"
+   prometheus.io/scheme: "http"
+   prometheus.io/path: "/actuator/prometheus"
+  labels:
+    "prometheus-discovery": "true"
+spec:
+  selector:
+    app.kubernetes.io/instance:  {{APP_NAME}}
+  type: NodePort
+  ports:
+    - name:  http
+      port:  80
+      targetPort:  8080
+    - name: debug
+      port:  18000
+      targetPort:  18000

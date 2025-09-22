@@ -1,0 +1,5 @@
+FROM 10.10.11.140:5000/shopastro:base-jdk8
+
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+COPY jdk8/entrypoint_jdk8.sh entrypoint.sh

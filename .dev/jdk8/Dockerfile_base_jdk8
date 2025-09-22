@@ -1,0 +1,20 @@
+FROM openjdk:8-jdk-alpine
+
+RUN apk add tzdata && \
+    apk add curl && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata && \
+    rm -rf /var/cache/apk/*
+
+# RUN wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar -O opentelemetry-javaagent.jar
+COPY opentelemetry-javaagent.jar /opentelemetry-javaagent.jar
+
+ENV OTEL_LOGS_EXPORTER "none"
+ENV OTEL_METRICS_EXPORTER "none"
+ENV OTEL_TRACES_EXPORTER "none"
+
+ENTRYPOINT ["sh","entrypoint.sh"]
+EXPOSE 8080 18000 20880
+
+#docker build -t 10.10.11.140:5000/shopastro:base-jdk8 . -f Dockerfile_base_jdk8
