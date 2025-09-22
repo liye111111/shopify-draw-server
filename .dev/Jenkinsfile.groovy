@@ -38,6 +38,27 @@ pipeline {
                 }
             }
         }
+        stage('Build boms-3rd') {
+            steps {
+                dir("${APP_NAME}") {
+                    sh '''
+                    cd module/boms-3rd
+                    mvn clean install -DskipTests -T 1C                    
+                    '''
+                }
+            }
+        }
+        stage('Build boms') {
+            steps {
+                dir("${APP_NAME}") {
+                    sh '''                    
+                    cd module/boms
+                    mvn clean install -DskipTests -T 1C
+                    '''
+                }
+            }
+        }
+
         stage('Build Project') {
             steps {
                 dir("${APP_NAME}") {
