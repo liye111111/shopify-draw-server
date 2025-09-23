@@ -1,7 +1,7 @@
 package me.liye.draw.dao;
 
-import me.liye.draw.domain.Activity;
-import me.liye.draw.domain.param.ListActivityParam;
+import me.liye.draw.domain.Draw;
+import me.liye.draw.domain.param.ListDrawParam;
 import me.liye.framework.datasource.mybatis.BaseMapperPgsql;
 import me.liye.open.share.page.PageQuery;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,13 +10,13 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * Created by liye on 2025-09-19.
+ * Created by liye on 2025-09-23.
  */
 @Mapper
-public interface ActivityMapper extends BaseMapperPgsql<Activity> {
+public interface DrawMapper extends BaseMapperPgsql<Draw> {
     String DDL = """
-            DROP TABLE if exists activity ;
-            CREATE TABLE activity (
+            DROP TABLE if exists draw ;
+            CREATE TABLE draw (
                 ID BIGSERIAL PRIMARY KEY,                                   -- 自增主键
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
@@ -26,16 +26,14 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                 status VARCHAR(128) NOT NULL,
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
-                draw_rule JSONB,
                 JSON_DATA JSONB NOT NULL
             );
             """;
 
-    String TABLE = "activity";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name, start_time, end_time, draw_rule, json_data";
-
+    String TABLE = "draw";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name, start_time, end_time, json_data";
 
     @PageQuery
-    @Select("SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED=false ORDER BY GMT_CREATE DESC")
-    List<Activity> list(ListActivityParam param);
+    @Select("SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED = FALSE")
+    List<Draw> list(ListDrawParam param);
 }

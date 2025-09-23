@@ -1,21 +1,21 @@
-package me.liye.draw.domain;
+package me.liye.draw.domain.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.open.share.rpc.BaseDTO;
+import me.liye.open.share.rpc.BasePageQuery;
 
 /**
- * 抽奖规则
- * Created by liye on 2025-09-19.
+ * Created by liye on 2025-09-22.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DrawRule extends BaseDTO {
-    String name;
+public class ListShopifyOrderParam extends BasePageQuery {
+    String orderId;
+    String email;
 }

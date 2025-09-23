@@ -1,17 +1,19 @@
 package me.liye.draw.dao;
 
 import me.liye.draw.domain.ShopifyOrder;
+import me.liye.draw.domain.param.ListShopifyOrderParam;
 import me.liye.framework.datasource.mybatis.BaseMapperPgsql;
+import me.liye.open.share.page.PageQuery;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * Created by liye on 2025-09-17.
  */
 @Mapper
 public interface ShopifyOrderMapper extends BaseMapperPgsql<ShopifyOrder> {
-    String TABLE = "shopify_order";
-    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,topic,order_id,amount,currency,customer_id,email,first_name,last_name,json_data";
-
     String DDL = """
             DROP TABLE if exists SHOPIFY_ORDER ;
             CREATE TABLE SHOPIFY_ORDER (
@@ -33,4 +35,11 @@ public interface ShopifyOrderMapper extends BaseMapperPgsql<ShopifyOrder> {
             );
             """;
 
+    String TABLE = "shopify_order";
+    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,topic,order_id,amount,currency,customer_id,email,first_name,last_name,json_data";
+
+
+    @PageQuery
+    @Select("select " + COLUMNS + " from " + TABLE + " where IS_DELETED=false")
+    List<ShopifyOrder> list(ListShopifyOrderParam param);
 }

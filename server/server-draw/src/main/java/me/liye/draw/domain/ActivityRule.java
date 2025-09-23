@@ -5,12 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
-
-import java.util.Date;
+import me.liye.open.share.rpc.BaseDTO;
 
 /**
- * 描述一次抽奖过程
+ * 抽奖规则
  * Created by liye on 2025-09-19.
  */
 @EqualsAndHashCode(callSuper = true)
@@ -18,17 +16,6 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Draw extends BaseDataObjectWithJsonColumn {
-
-    String shopDomain;
+public class ActivityRule extends BaseDTO {
     String name;
-    String status;
-    Date startTime;
-    Date endTime;
-
-
-    public enum DrawStatus {
-        START,
-        END
-    }
 }

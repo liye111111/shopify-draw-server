@@ -69,8 +69,8 @@ public interface WorkerNodeDAO {
             "#{port}," +
             "#{type}," +
             "#{launchDate}," +
-            "sysdate," +
-            "sysdate)")
+            "now()," +
+            "now())")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void addWorkerNode(WorkerNodeEntity workerNodeEntity);
 

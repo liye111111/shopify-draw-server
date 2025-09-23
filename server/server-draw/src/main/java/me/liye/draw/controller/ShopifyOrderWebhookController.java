@@ -81,7 +81,7 @@ public class ShopifyOrderWebhookController {
                     .currency(order.getCurrentTotalPriceSet().getShopMoney().getCurrencyCode())
                     .build();
 
-            orderService.saveOrder(row);
+            orderService.create(row);
 
             return ResponseEntity.ok(
                     RpcResult.success(

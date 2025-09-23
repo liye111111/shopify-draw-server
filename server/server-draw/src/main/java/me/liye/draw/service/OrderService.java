@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.dao.ShopifyOrderMapper;
 import me.liye.draw.domain.ShopifyOrder;
+import me.liye.draw.domain.param.ListShopifyOrderParam;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by liye on 2025-09-17.
@@ -16,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class OrderService {
     final ShopifyOrderMapper shopifyOrderMapper;
 
-    public ShopifyOrder saveOrder(ShopifyOrder order) {
+    public ShopifyOrder create(ShopifyOrder order) {
         try {
             shopifyOrderMapper.insert(order);
         } catch (DuplicateKeyException e) {
@@ -24,5 +27,10 @@ public class OrderService {
         }
         return order;
 
+    }
+
+    public List<ShopifyOrder> list(ListShopifyOrderParam param) {
+        List<ShopifyOrder> rows = shopifyOrderMapper.list(param);
+        return rows;
     }
 }

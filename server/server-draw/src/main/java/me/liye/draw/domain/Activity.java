@@ -24,7 +24,7 @@ public class Activity extends BaseDataObjectWithJsonColumn {
     String status;
     Date startTime;
     Date endTime;
-    DrawRule drawRule;
+    ActivityRule activityRule;
 
 
     public enum ActivityStatus {

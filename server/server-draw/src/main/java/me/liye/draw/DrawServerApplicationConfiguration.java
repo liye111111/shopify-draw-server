@@ -1,6 +1,6 @@
 package me.liye.draw;
 
-import me.liye.draw.domain.DrawRule;
+import me.liye.draw.domain.ActivityRule;
 import me.liye.framework.datasource.mybatis.JsonTypeRegister;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ public class DrawServerApplicationConfiguration {
 
     @Bean
     public JsonTypeRegister jsonTypeRegister() {
-        return () -> List.of(DrawRule.class);
+        return () -> List.of(ActivityRule.class);
     }
 
 }
