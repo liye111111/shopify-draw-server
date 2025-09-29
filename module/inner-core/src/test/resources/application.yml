@@ -1,0 +1,22 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    url: jdbc:postgresql://10.10.11.126:31035/postgres?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: postgres
+    password: hQwezjzLY1
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+
+shopify:
+  api-key: 6509bf354689c1a63284827062bc9e2b
+  api-secret: 00800caa488b242267e490c3d5cb2ac5
+  scopes: read_orders
+  redirect-uri: http://47.111.123.179:30888/shopify/callback

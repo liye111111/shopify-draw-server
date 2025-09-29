@@ -17,36 +17,23 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-
     <modules>
-        <module>module/open-share</module>
-        <module>module/open-framework</module>
+        <module>module/open-draw</module>
+        <module>module/inner-core</module>
         <module>server/server-draw</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
-                <groupId>me.liye.server-framework</groupId>
-                <artifactId>boms</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>me.liye.draw</groupId>
+                <artifactId>open-draw</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>me.liye.draw</groupId>
-                <artifactId>open-share</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.liye.draw</groupId>
-                <artifactId>open-framework</artifactId>
+                <artifactId>inner-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
