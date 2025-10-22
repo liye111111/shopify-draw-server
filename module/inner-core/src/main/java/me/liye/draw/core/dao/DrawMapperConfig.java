@@ -1,6 +1,8 @@
 package me.liye.draw.core.dao;
 
-import me.liye.draw.open.domain.ActivityRule;
+import me.liye.draw.open.domain.ActivityTarget;
+import me.liye.draw.open.domain.DrawRule;
+import me.liye.draw.open.domain.enums.DrawTriggerType;
 import me.liye.framework.datasource.mybatis.JsonTypeRegister;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,9 @@ import java.util.List;
 public class DrawMapperConfig {
     @Bean
     public JsonTypeRegister jsonTypeRegister() {
-        return () -> List.of(ActivityRule.class);
+        return () -> List.of(DrawRule.class,
+                ActivityTarget.class,
+                DrawTriggerType.class
+        );
     }
 }

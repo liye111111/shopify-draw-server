@@ -6,7 +6,9 @@ import me.liye.draw.core.dao.ActivityMapper;
 import me.liye.draw.open.domain.Activity;
 import me.liye.draw.open.domain.ShopifyOrder;
 import me.liye.draw.open.domain.param.CreateActivityParam;
+import me.liye.draw.open.domain.param.GetActivityParam;
 import me.liye.draw.open.domain.param.ListActivityParam;
+import me.liye.draw.open.domain.param.UpdateActivityParam;
 import me.liye.open.share.util.TypeConvertor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,14 @@ public class ActivityService {
         return activityMapper.selectById(row);
     }
 
+    public Activity update(UpdateActivityParam param) {
+        Activity row = TypeConvertor.convert(param, Activity.class);
+        Activity old = activityMapper.selectById(row);
+        TypeConvertor.copyProperties(row, old, true, "jsonData");
+        activityMapper.updateById(old);
+        return activityMapper.selectById(old);
+    }
+
     public List<Activity> list(ListActivityParam param) {
         return activityMapper.list(param);
     }
@@ -37,10 +47,15 @@ public class ActivityService {
         List<Activity> rows = list(ListActivityParam.builder().build());
         return rows.stream().filter(
                 it -> {
-                    BigDecimal threshold = new BigDecimal(it.getActivityRule().getOrderPriceThreshold());
+                    BigDecimal threshold = new BigDecimal(it.getMinOrderSpend());
                     BigDecimal orderPrice = new BigDecimal(order.getPrice());
                     return orderPrice.compareTo(threshold) >= 0;
                 }
         ).findFirst().orElse(null);
+    }
+
+    public Activity get(GetActivityParam param) {
+        Activity row = TypeConvertor.convert(param, Activity.class);
+        return activityMapper.selectById(row);
     }
 }

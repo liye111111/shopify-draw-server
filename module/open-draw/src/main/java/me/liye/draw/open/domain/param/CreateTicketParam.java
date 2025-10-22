@@ -34,5 +34,5 @@ public class CreateTicketParam extends BaseDTO {
     /**
      * 抽奖金额
      */
-    int amount;
+    String amount;
 }

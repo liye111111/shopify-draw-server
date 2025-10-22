@@ -18,6 +18,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>framework</module>
         <module>module/open-draw</module>
         <module>module/inner-core</module>
         <module>server/server-draw</module>

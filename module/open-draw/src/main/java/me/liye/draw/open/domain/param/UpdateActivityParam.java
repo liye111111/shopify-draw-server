@@ -1,26 +1,28 @@
-package me.liye.draw.open.domain;
+package me.liye.draw.open.domain.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import me.liye.draw.open.domain.ActivityTarget;
+import me.liye.draw.open.domain.DrawRule;
 import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.enums.DrawTriggerType;
-import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
+import me.liye.open.share.rpc.BaseDTO;
 
 import java.util.Date;
 
 /**
- * 抽奖活动配置
- * Created by liye on 2025-09-19.
+ * Created by liye on 2025-09-23.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Activity extends BaseDataObjectWithJsonColumn {
+public class UpdateActivityParam extends BaseDTO {
+    Long id;
     /**
      * 店铺
      */
@@ -43,10 +45,6 @@ public class Activity extends BaseDataObjectWithJsonColumn {
      */
     Date endTime;
 
-
-    /**
-     * 抽奖触发方式
-     */
     DrawTriggerType drawTriggerType;
 
     /**
@@ -67,7 +65,7 @@ public class Activity extends BaseDataObjectWithJsonColumn {
     /**
      * 用户参与抽奖消费门槛
      */
-    String minTotalSpend;
+    String minUserTotalSpend;
 
     /**
      * 订单消费门槛
@@ -90,4 +88,5 @@ public class Activity extends BaseDataObjectWithJsonColumn {
      * 钱包地址
      */
     String walletAddress;
+
 }

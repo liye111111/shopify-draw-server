@@ -1,4 +1,4 @@
-package me.liye.draw.open.domain.param;
+package me.liye.draw.open.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,25 +8,23 @@ import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BaseDTO;
 
 /**
- * Created by liye on 2025-09-24.
+ * 活动目标条目
+ * Created by liye on 2025-10-20.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplyRewardParam extends BaseDTO {
-    String shopDomain;
+public class ActivityTargetEntry extends BaseDTO {
     /**
-     * 活动ID
+     * 完成百分比：0-100
      */
-    Long activityId;
+    int percent;
     /**
-     * 中奖用户的钱包地址
+     * 奖池金额
      */
-    String rewardWalletAddress;
-    /**
-     * token数量
-     */
-    String amount;
+    String rewardAmount;
+
+
 }

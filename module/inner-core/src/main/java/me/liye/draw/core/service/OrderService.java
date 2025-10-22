@@ -38,12 +38,12 @@ public class OrderService {
                         .shopDomain(order.getShopDomain())
                         .orderId(order.getId())
                         .activityId(activity.getId())
-                        .activityRuleName(activity.getActivityRule().getName())
+                        .activityRuleName(activity.getDrawRule().getName())
                         .email(order.getEmail())
                         .orderId(order.getId())
                         .orderPrice(order.getPrice())
                         .orderCurrency(order.getCurrency())
-                        .amount(activity.getActivityRule().getRewardAmount())
+//                        .amount(activity.getDrawRule().getMinRewardAmount())
                         .build());
                 log.info("matched activity: {}, create ticket {} for order: {}", activity.getId(), ticket.getId(), order.getOrderId());
             }

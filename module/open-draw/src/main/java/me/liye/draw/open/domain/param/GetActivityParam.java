@@ -8,25 +8,13 @@ import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BaseDTO;
 
 /**
- * Created by liye on 2025-09-24.
+ * Created by liye on 2025-09-22.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplyRewardParam extends BaseDTO {
-    String shopDomain;
-    /**
-     * 活动ID
-     */
-    Long activityId;
-    /**
-     * 中奖用户的钱包地址
-     */
-    String rewardWalletAddress;
-    /**
-     * token数量
-     */
-    String amount;
+public class GetActivityParam extends BaseDTO {
+    Long id;
 }

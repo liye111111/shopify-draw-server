@@ -3,10 +3,17 @@ package me.liye.open.share.util;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.open.share.page.PageQueryResult;
 import me.liye.open.share.rpc.RpcResult;
+import org.apache.commons.lang3.ArrayUtils;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
+import java.beans.PropertyDescriptor;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -83,4 +90,26 @@ public class TypeConvertor {
     }
 
 
+    public static <T, R> void copyProperties(T src, R target, boolean ignoreNull, String... ignoreProperties) {
+        String[] nullPropertyNames = getNullPropertyNames(ignoreNull ? src : null);
+        BeanUtils.copyProperties(src, target, ArrayUtils.addAll(nullPropertyNames, ignoreProperties));
+    }
+
+    public static String[] getNullPropertyNames(Object source) {
+        if (source == null) {
+            return new String[0];
+        }
+
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<>();
+        for (PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) {
+                emptyNames.add(pd.getName());
+            }
+        }
+        return emptyNames.toArray(new String[0]);
+    }
 }

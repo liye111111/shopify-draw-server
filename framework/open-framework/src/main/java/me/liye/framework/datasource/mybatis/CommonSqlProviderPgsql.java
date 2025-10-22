@@ -175,6 +175,19 @@ public class CommonSqlProviderPgsql {
                             String property = toCamel(it); // 仍然按 Java 驼峰属性取
                             Class<?> type = columnTypeMap.getOrDefault(property, Object.class);
                             JdbcType jdbcType = guessJdbcType(type);
+
+                            // 适配 PostgresSQL
+                            if (jdbcType == JdbcType.CLOB) {
+                                jdbcType = JdbcType.VARCHAR;
+                            }
+                            if (jdbcType == JdbcType.BLOB) {
+                                jdbcType = JdbcType.BINARY;
+                            }
+
+                            if (jdbcType == JdbcType.OTHER) {
+                                return String.format("%s=#{%s,jdbcType=VARCHAR}::json", it, property);
+                            }
+
                             return "%s=#{%s,jdbcType=%s}".formatted(it, property, jdbcType.name());
                         }
                 )
@@ -228,7 +241,7 @@ public class CommonSqlProviderPgsql {
         if (type == null) {
             return JdbcType.OTHER;
         }
-        if (String.class.isAssignableFrom(type)) {
+        if (String.class.isAssignableFrom(type) || type.isEnum()) {
             return JdbcType.VARCHAR;
         } else if (Integer.class.isAssignableFrom(type) || int.class.isAssignableFrom(type)) {
             return JdbcType.INTEGER;

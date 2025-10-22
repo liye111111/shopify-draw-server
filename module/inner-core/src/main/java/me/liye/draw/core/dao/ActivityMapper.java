@@ -15,24 +15,40 @@ import java.util.List;
 @Mapper
 public interface ActivityMapper extends BaseMapperPgsql<Activity> {
     String DDL = """
-            DROP TABLE if exists activity ;
+            DROP TABLE IF EXISTS activity;
+            
             CREATE TABLE activity (
-                ID BIGSERIAL PRIMARY KEY,                                   -- 自增主键
-                GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
-                GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
-                IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
-                name VARCHAR(128) NOT NULL,
-                status VARCHAR(128) NOT NULL,
-                start_time TIMESTAMP,
-                end_time TIMESTAMP,
-                activity_rule JSONB,
-                JSON_DATA JSONB NOT NULL
+                id BIGSERIAL PRIMARY KEY,                                   -- 自增主键
+                gmt_create TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
+                gmt_modified TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
+                is_deleted BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
+            
+                shop_domain VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
+                name VARCHAR(128) NOT NULL,                                 -- 活动名称
+                description VARCHAR(2048),                                  -- 活动描述
+                background_image VARCHAR(2048),                             -- 活动背景图
+                preview_image VARCHAR(2048),                                -- 预览图
+            
+                status VARCHAR(128) NOT NULL,                               -- 活动状态（例如 DRAFT / ACTIVE / ENDED）
+                start_time TIMESTAMP WITH TIME ZONE,                        -- 活动开始时间
+                end_time TIMESTAMP WITH TIME ZONE,                          -- 活动结束时间
+                draw_trigger_type VARCHAR(128),
+            
+                activity_target JSONB,                                      -- 活动目标配置（目标用户/人群条件等）
+                draw_rule JSONB,                                            -- 抽奖规则定义（奖池金额、策略、上下限比例等）
+            
+                min_total_spend VARCHAR(128),                              -- 用户累计消费门槛
+                min_order_spend VARCHAR(128),                              -- 单笔订单参与门槛
+                wallet_address VARCHAR(256),                                -- 钱包地址（如果奖励为代币或链上资产）
+            
+                json_data JSONB NOT NULL                                    -- 预留扩展字段（活动自定义配置）
             );
             """;
 
     String TABLE = "activity";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name, start_time, end_time, activity_rule, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name,description," +
+            " start_time, end_time,draw_trigger_type,background_image, preview_image," +
+            "activity_target,draw_rule, min_total_spend,min_order_spend,wallet_address,json_data";
 
 
     @PageQuery

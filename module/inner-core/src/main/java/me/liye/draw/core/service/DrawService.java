@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.dao.DrawMapper;
 import me.liye.draw.core.dao.TicketMapper;
-import me.liye.draw.open.domain.*;
+import me.liye.draw.open.domain.Activity;
+import me.liye.draw.open.domain.Draw;
+import me.liye.draw.open.domain.Ticket;
+import me.liye.draw.open.domain.TraceLog;
 import me.liye.draw.open.domain.param.ApplyRewardParam;
 import me.liye.draw.open.domain.param.CreateDrawParam;
 import me.liye.draw.open.domain.param.ListDrawParam;
@@ -85,11 +88,11 @@ public class DrawService {
                             .activityId(draw.getActivityId())
                             .build()
             );
-            draw(tickets, activity.getActivityRule());
+            draw(tickets, activity);
             // call web3 contract api
         }
 
-        private void draw(List<Ticket> tickets, ActivityRule rule) {
+        private void draw(List<Ticket> tickets, Activity activity) {
             AtomicLong winCount = new AtomicLong(tickets.stream().filter(it -> it.getStatus().equals(Ticket.TicketStatus.WIN.name())).count());
             for (Ticket ticket : tickets) {
                 Ticket.TicketStatus status = Ticket.TicketStatus.valueOf(ticket.getStatus());
@@ -98,17 +101,17 @@ public class DrawService {
                     continue;
                 }
 
-                if (winCount.intValue() > rule.getRewardAmount()) {
-                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
-                }
-
+//                if (winCount.intValue() > rule.getRewardAmount()) {
+//                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
+//                }
+//
                 double r = RandomUtils.nextDouble(0, 1);
-                if (r <= rule.getWinningProbability()) {
-                    ticket.setStatus(Ticket.TicketStatus.WIN.name());
-                    winCount.incrementAndGet();
-                } else {
-                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
-                }
+//                if (r <= rule.getWinningProbability()) {
+//                    ticket.setStatus(Ticket.TicketStatus.WIN.name());
+//                    winCount.incrementAndGet();
+//                } else {
+//                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
+//                }
                 // write to db
                 ticketMapper.updateStatusAndRandomSeed(ticket.getId(), ticket.getStatus(), String.valueOf(r));
                 //
