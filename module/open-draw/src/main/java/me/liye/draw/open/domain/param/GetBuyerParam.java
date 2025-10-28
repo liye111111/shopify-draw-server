@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.draw.open.domain.Ticket;
-import me.liye.open.share.rpc.BasePageQuery;
-
-import java.util.List;
+import me.liye.open.share.rpc.BaseDTO;
 
 /**
  * Created by liye on 2025-09-22.
@@ -18,15 +15,8 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListTicketParam extends BasePageQuery {
+public class GetBuyerParam extends BaseDTO {
+    Long id;
     String shopDomain;
-    String name;
     String email;
-    Long activityId;
-
-    List<Long> orderIds;
-    List<Long> activityIds;
-
-    Ticket.TicketStatus status;
-
 }

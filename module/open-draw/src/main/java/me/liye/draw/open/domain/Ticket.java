@@ -22,6 +22,11 @@ public class Ticket extends BaseDataObjectWithEmptyJsonColumn {
     String name;
 
     /**
+     * 抽奖票编号
+     */
+    String ticketSn;
+
+    /**
      * 抽奖人邮箱
      */
     String email;

@@ -42,7 +42,7 @@ pipeline {
             steps {
                 dir("${APP_NAME}") {
                     sh '''
-                    cd module/boms-3rd
+                    cd framework/boms-3rd
                     mvn clean install -DskipTests -T 1C                    
                     '''
                 }
@@ -52,7 +52,18 @@ pipeline {
             steps {
                 dir("${APP_NAME}") {
                     sh '''                    
-                    cd module/boms
+                    cd framework/boms
+                    mvn clean install -DskipTests -T 1C
+                    '''
+                }
+            }
+        }
+
+        stage('Build framework') {
+            steps {
+                dir("${APP_NAME}") {
+                    sh '''                    
+                    cd framework
                     mvn clean install -DskipTests -T 1C
                     '''
                 }

@@ -16,12 +16,14 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTicketParam extends BaseDTO {
+    String ticketSn;
     String shopDomain;
     Long activityId;
     String activityRuleName;
     Long orderId;
     String orderPrice;
     String orderCurrency;
+
     /**
      * 抽奖人邮箱
      */

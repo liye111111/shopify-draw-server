@@ -25,4 +25,9 @@ public class CreateDrawParam extends BaseDTO {
 
     @Builder.Default
     String status = Draw.DrawStatus.START.name();
+
+    /**
+     * 强制重抽，忽略状态
+     */
+    boolean force;
 }

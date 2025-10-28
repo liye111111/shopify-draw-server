@@ -16,6 +16,7 @@ import java.util.List;
 import static me.liye.open.share.rpc.RpcResult.success;
 
 /**
+ * 活动
  * Created by liye on 2025-09-19.
  */
 @Slf4j

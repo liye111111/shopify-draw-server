@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.draw.open.domain.Ticket;
 import me.liye.open.share.rpc.BasePageQuery;
 
 import java.util.List;
@@ -18,15 +17,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListTicketParam extends BasePageQuery {
+public class ListBuyerParam extends BasePageQuery {
     String shopDomain;
-    String name;
-    String email;
-    Long activityId;
-
-    List<Long> orderIds;
-    List<Long> activityIds;
-
-    Ticket.TicketStatus status;
-
+    List<String> emails;
 }

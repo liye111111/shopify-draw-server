@@ -24,7 +24,7 @@ public class OrderController {
     final OrderService orderService;
 
     @RequestMapping("/list")
-    public RpcResult<List<ShopifyOrder>> listShopifyOrder(ListShopifyOrderParam param) {
+    public RpcResult<List<ShopifyOrder>> list(ListShopifyOrderParam param) {
         return success(orderService.list(param));
     }
 }

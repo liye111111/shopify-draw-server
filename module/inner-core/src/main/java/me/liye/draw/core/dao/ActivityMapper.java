@@ -1,11 +1,14 @@
 package me.liye.draw.core.dao;
 
 import me.liye.draw.open.domain.Activity;
+import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.param.ListActivityParam;
 import me.liye.framework.datasource.mybatis.BaseMapperPgsql;
 import me.liye.open.share.page.PageQuery;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.util.List;
 
@@ -37,8 +40,8 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                 activity_target JSONB,                                      -- 活动目标配置（目标用户/人群条件等）
                 draw_rule JSONB,                                            -- 抽奖规则定义（奖池金额、策略、上下限比例等）
             
-                min_total_spend VARCHAR(128),                              -- 用户累计消费门槛
-                min_order_spend VARCHAR(128),                              -- 单笔订单参与门槛
+                min_user_total_spend VARCHAR(128),                              -- 用户累计消费门槛
+                min_order_single_spend VARCHAR(128),                              -- 单笔订单参与门槛
                 wallet_address VARCHAR(256),                                -- 钱包地址（如果奖励为代币或链上资产）
             
                 json_data JSONB NOT NULL                                    -- 预留扩展字段（活动自定义配置）
@@ -48,10 +51,33 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
     String TABLE = "activity";
     String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name,description," +
             " start_time, end_time,draw_trigger_type,background_image, preview_image," +
-            "activity_target,draw_rule, min_total_spend,min_order_spend,wallet_address,json_data";
+            "activity_target,draw_rule, min_user_total_spend,min_order_single_spend,wallet_address,json_data";
 
 
     @PageQuery
-    @Select("SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED=false ORDER BY GMT_CREATE DESC")
+    @SelectProvider(type = InnerSqlProvider.class, method = "list")
     List<Activity> list(ListActivityParam param);
+
+    @UpdateProvider(type = InnerSqlProvider.class, method = "updateStatus")
+    int updateStatus(@Param("id") Long id, @Param("status") ActivityStatus status);
+
+    class InnerSqlProvider {
+        public String list() {
+            return """                    
+                    <script>
+                    select %s from %s WHERE IS_DELETED=false
+                    <if test='status != null'>and status=#{status}</if>
+                    <if test='startAtGrateThen != null'>and start_time &gt;= #{startAtGrateThen}</if>
+                    <if test='startAtLessThen != null'>and start_time &lt; #{startAtGrateThen}</if>
+                    ORDER BY GMT_CREATE DESC
+                    </script>
+                    """.formatted(COLUMNS, TABLE);
+        }
+
+        public String updateStatus() {
+            return """
+                    UPDATE %s SET status=#{status} WHERE id=#{id}
+                    """.formatted(TABLE);
+        }
+    }
 }

@@ -8,10 +8,14 @@ import me.liye.draw.open.domain.ShopifyOrder;
 import me.liye.draw.open.domain.Ticket;
 import me.liye.draw.open.domain.param.CreateTicketParam;
 import me.liye.draw.open.domain.param.ListShopifyOrderParam;
+import me.liye.draw.open.domain.param.ListTicketParam;
+import me.liye.open.share.util.UUIDUtil;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by liye on 2025-09-17.
@@ -35,6 +39,7 @@ public class OrderService {
             } else {
                 // 符合条件，发放ticket
                 Ticket ticket = ticketService.create(CreateTicketParam.builder()
+                        .ticketSn(UUIDUtil.generateShortTicketSn("T-"))// 生成ticketSn
                         .shopDomain(order.getShopDomain())
                         .orderId(order.getId())
                         .activityId(activity.getId())
@@ -56,6 +61,14 @@ public class OrderService {
 
     public List<ShopifyOrder> list(ListShopifyOrderParam param) {
         List<ShopifyOrder> rows = shopifyOrderMapper.list(param);
+
+        Map<Long, Ticket> ticketMap = ticketService.list(ListTicketParam.builder()
+                        .orderIds(rows.stream().map(ShopifyOrder::getId).toList())
+                        .build())
+                .stream().collect(Collectors.toMap(Ticket::getOrderId, it -> it));
+
+        rows.forEach(it -> it.setTicket(ticketMap.get(it.getId())));
+
         return rows;
     }
 }

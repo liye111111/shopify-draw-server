@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BasePageQuery;
 
+import java.util.Date;
+
 /**
  * Created by liye on 2025-09-22.
  */
@@ -17,4 +19,7 @@ import me.liye.open.share.rpc.BasePageQuery;
 @NoArgsConstructor
 public class ListActivityParam extends BasePageQuery {
     String name;
+    String status;
+    Date startAtGrateThen;
+    Date startAtLessThen;
 }

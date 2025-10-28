@@ -5,7 +5,7 @@ import me.liye.draw.open.domain.param.ListTicketParam;
 import me.liye.framework.datasource.mybatis.BaseMapperPgsql;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface TicketMapper extends BaseMapperPgsql<Ticket> {
     String TABLE = "ticket";
-    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,name, status,email, wallet_address, activity_id,activity_rule_name, order_id, order_price,order_currency, tx_id, amount, json_data";
+    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,name, ticket_sn,status,email, wallet_address, activity_id,activity_rule_name, order_id, order_price,order_currency, tx_id, amount, json_data";
 
     String DDL = """
             DROP TABLE if exists ticket ;
@@ -27,6 +27,7 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,
                 SHOP_DOMAIN VARCHAR(512) NOT NULL,
                 name VARCHAR(128),
+                ticket_sn VARCHAR(128),
                 status VARCHAR(128),
                 email VARCHAR(256),
                 wallet_address VARCHAR(128),
@@ -42,17 +43,44 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
             );
             """;
 
-    @Select("<script>SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED = false"
-            + """
-            <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
-            order by gmt_create desc
-            </script>""")
+
+    @SelectProvider(type = InnerSqlProvider.class, method = "list")
     List<Ticket> list(ListTicketParam param);
 
-    @Update("UPDATE " + TABLE + " SET status=#{status}, random_seed=#{randomSeed} WHERE ID = #{id}")
-    int updateStatusAndRandomSeed(
-            @Param("id") Long id, @Param("status") String status, @Param("randomSeed") String randomSeed);
+    @Update("UPDATE " + TABLE + " SET status=#{status},amount=#{amount}, random_seed=#{randomSeed} WHERE ID = #{id}")
+    int updateDrawResult(@Param("id") Long id, @Param("status") String status, @Param("amount") String amount, @Param("randomSeed") String randomSeed);
 
     @Update("UPDATE " + TABLE + " SET tx_id= #{txId} WHERE ID = #{id}")
     int updateTxId(@Param("id") Long id, @Param("txId") String txId);
+
+
+    class InnerSqlProvider {
+        public String list(ListTicketParam param) {
+            return """
+                    <script>
+                    SELECT %s from %s WHERE IS_DELETED = false
+                    <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
+                    <if test="email != null">and email=#{email}</if>
+                    <if test="orderIds != null">
+                    and order_id in (
+                        <foreach item='orderId' collection='orderIds' separator=','>
+                            #{orderId}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="activityIds != null">
+                    and activity_id in (
+                        <foreach item='activityId' collection='activityIds' separator=','>
+                            #{activityId}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="status != null">
+                    and status = #{status}
+                    </if>
+                    order by gmt_create desc
+                    </script>
+                    """.formatted(COLUMNS, TABLE);
+        }
+    }
 }

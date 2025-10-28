@@ -1,9 +1,6 @@
 package me.liye.draw.open.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import me.liye.draw.open.domain.enums.DrawStrategy;
 import me.liye.open.share.rpc.BaseDTO;
@@ -49,5 +46,11 @@ public class DrawRule extends BaseDTO {
      * 最小中奖金额
      */
     String minRewardAmount;
+
+    /**
+     * 中奖概率
+     */
+    @Builder.Default
+    double winRate = 0.5;
 
 }

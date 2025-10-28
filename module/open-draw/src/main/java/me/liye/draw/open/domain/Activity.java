@@ -65,14 +65,14 @@ public class Activity extends BaseDataObjectWithJsonColumn {
     ActivityTarget activityTarget;
 
     /**
-     * 用户参与抽奖消费门槛
+     * 用户总消费参与抽奖门槛
      */
-    String minTotalSpend;
+    String minUserTotalSpend;
 
     /**
-     * 订单消费门槛
+     * 单笔订单抽奖门槛
      */
-    String minOrderSpend;
+    String minOrderSingleSpend;
 
     /**
      * 活动状态

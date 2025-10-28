@@ -43,4 +43,7 @@ public class ShopifyOrder extends BaseDataObjectWithEmptyJsonColumn {
     String email;
     String firstName;
     String lastName;
+
+    //
+    Ticket ticket;
 }

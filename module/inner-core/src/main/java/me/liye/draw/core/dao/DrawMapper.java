@@ -5,7 +5,7 @@ import me.liye.draw.open.domain.param.ListDrawParam;
 import me.liye.framework.datasource.mybatis.BaseMapperPgsql;
 import me.liye.open.share.page.PageQuery;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
@@ -22,7 +22,8 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
                 SHOP_DOMAIN VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
-                name VARCHAR(128) NOT NULL,
+                activity_id bigint,
+                name VARCHAR(128),
                 status VARCHAR(128) NOT NULL,
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
@@ -31,14 +32,22 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
             """;
 
     String TABLE = "draw";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name, start_time, end_time, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain,activity_id, name, start_time, end_time, json_data";
 
     @PageQuery
-    @Select("<script>SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED = FALSE"
-            + """
-            <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
-            order by gmt_create desc
-            </script>"""
-    )
+    @SelectProvider(type = InnerSqlProvider.class, method = "list")
     List<Draw> list(ListDrawParam param);
+
+    class InnerSqlProvider {
+        public String list(ListDrawParam param) {
+            return """
+                    <script>
+                    SELECT %s FROM %s WHERE IS_DELETED = FALSE
+                    <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
+                    <if test="activityId != null">and activity_id=#{activityId}</if>                   
+                    order by gmt_create desc
+                    </script>
+                    """.formatted(COLUMNS, TABLE);
+        }
+    }
 }

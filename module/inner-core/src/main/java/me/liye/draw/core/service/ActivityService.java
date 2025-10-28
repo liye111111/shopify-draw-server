@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.dao.ActivityMapper;
 import me.liye.draw.open.domain.Activity;
 import me.liye.draw.open.domain.ShopifyOrder;
+import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.param.CreateActivityParam;
 import me.liye.draw.open.domain.param.GetActivityParam;
 import me.liye.draw.open.domain.param.ListActivityParam;
@@ -30,6 +31,11 @@ public class ActivityService {
         return activityMapper.selectById(row);
     }
 
+
+    public int updateStatus(Long id, ActivityStatus status) {
+        return activityMapper.updateStatus(id,status);
+    }
+
     public Activity update(UpdateActivityParam param) {
         Activity row = TypeConvertor.convert(param, Activity.class);
         Activity old = activityMapper.selectById(row);
@@ -47,7 +53,7 @@ public class ActivityService {
         List<Activity> rows = list(ListActivityParam.builder().build());
         return rows.stream().filter(
                 it -> {
-                    BigDecimal threshold = new BigDecimal(it.getMinOrderSpend());
+                    BigDecimal threshold = new BigDecimal(it.getMinOrderSingleSpend());
                     BigDecimal orderPrice = new BigDecimal(order.getPrice());
                     return orderPrice.compareTo(threshold) >= 0;
                 }

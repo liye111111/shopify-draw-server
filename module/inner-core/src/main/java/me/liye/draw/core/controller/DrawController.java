@@ -14,6 +14,7 @@ import java.util.List;
 import static me.liye.open.share.rpc.RpcResult.success;
 
 /**
+ * 抽奖
  * Created by liye on 2025-09-19.
  */
 @Slf4j
@@ -24,6 +25,9 @@ public class DrawController {
 
     final DrawService drawService;
 
+    /**
+     * 创建并执行一次抽奖
+     */
     @PostMapping("/create")
     public RpcResult<Draw> create(@RequestBody CreateDrawParam param) {
         return success(drawService.create(param));
