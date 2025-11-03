@@ -90,4 +90,10 @@ public class Activity extends BaseDataObjectWithJsonColumn {
      * 钱包地址
      */
     String walletAddress;
+
+    /**
+     * 充值金额
+     * dev: DCDpBz2wzXpX4rD1F7o9jfxnzGEJ4AsP4TgDaaVi6ude
+     */
+    String rewardToken;
 }

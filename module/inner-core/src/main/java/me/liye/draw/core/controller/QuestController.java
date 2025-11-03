@@ -20,6 +20,8 @@ import me.liye.open.share.page.PageQueryResult;
 import me.liye.open.share.rpc.Pagination;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -119,11 +121,11 @@ public class QuestController {
         return Quest.builder()
                 .questId(row.getId())
                 .status(row.getStatus())
-                .totalAmount(Long.valueOf(row.getActivityTarget().getRewardTarget()))
+                .totalAmount(toLong(row.getActivityTarget().getRewardTarget()))
                 .startAt(row.getStartTime())
                 .endAt(row.getEndTime())
                 .merchantAddress(row.getWalletAddress())
-                .rewardToken("todo") //TODO:
+                .rewardToken(row.getRewardToken())
                 .build();
     }
 
@@ -132,8 +134,15 @@ public class QuestController {
                 .questId(ticket.getActivityId())
                 .email(ticket.getEmail())
                 .address(ticket.getWalletAddress())
-                .amount(Double.valueOf(ticket.getAmount()))
+                .amount(toLong(ticket.getAmount()))
                 .build();
+    }
+
+    private static Long toLong(String value) {
+        return new BigDecimal(value)
+                .multiply(BigDecimal.valueOf(1_000_000_000L)) //10e9
+                .setScale(0, RoundingMode.DOWN) // TODO：从活动配置取
+                .longValue();
     }
 
     /**
@@ -187,7 +196,7 @@ public class QuestController {
         @JsonProperty("address")
         String address;
         @JsonProperty("amount")
-        Double amount;
+        Long amount;
     }
 
 

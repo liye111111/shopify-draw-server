@@ -88,4 +88,8 @@ public class CreateActivityParam extends BaseDTO {
      */
     String walletAddress;
 
+    /**
+     * 充值金额
+     */
+    String rewardToken;
 }
