@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import me.liye.draw.core.dao.QuestEventMapper;
 import me.liye.draw.core.service.ActivityService;
+import me.liye.draw.core.service.QuestEventService;
 import me.liye.draw.core.service.TicketService;
 import me.liye.draw.open.domain.Activity;
 import me.liye.draw.open.domain.QuestEvent;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class QuestController {
     final ActivityService activityService;
     final TicketService ticketService;
-    final QuestEventMapper questEventMapper;
+    final QuestEventService questEventService;
 
     /**
      * 活动列表，含奖励
@@ -119,8 +119,8 @@ public class QuestController {
 //                .id(param.getQuestId())
 //                .status(param.getStatus())
 //                .build());
-        questEventMapper.insert(param);
-        return Result.success(Map.of("task-id", param.getId()));
+        String info = questEventService.receiveEvent(param);
+        return Result.success(Map.of("task-id", param.getId(), "info", info));
     }
 
     private static Quest toQuest(Activity row) {

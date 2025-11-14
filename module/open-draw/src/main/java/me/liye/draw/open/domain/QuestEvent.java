@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
+import me.liye.open.share.dataobject.JsonDataProperty;
 
 import java.util.Map;
 
@@ -25,7 +26,15 @@ public class QuestEvent extends BaseDataObjectWithEmptyJsonColumn {
     Long questId;
     @JsonProperty("event_name")
     String eventName;
-    @JsonProperty("body")
+    @JsonProperty(value = "body")
     Map<String, ?> body;
+
+    @JsonDataProperty
+    Object before;
+    @JsonDataProperty
+    Object after;
+
+    @JsonDataProperty
+    String info;
 
 }

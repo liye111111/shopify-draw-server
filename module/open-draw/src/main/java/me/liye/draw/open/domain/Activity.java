@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.enums.DrawTriggerType;
-import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
+import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
 
 import java.util.Date;
 
@@ -20,7 +20,7 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Activity extends BaseDataObjectWithJsonColumn {
+public class Activity extends BaseDataObjectWithEmptyJsonColumn {
     /**
      * 店铺
      */

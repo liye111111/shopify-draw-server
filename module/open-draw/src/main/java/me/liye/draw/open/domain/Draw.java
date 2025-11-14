@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
+import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Draw extends BaseDataObjectWithJsonColumn {
+public class Draw extends BaseDataObjectWithEmptyJsonColumn {
 
     String shopDomain;
     String name;

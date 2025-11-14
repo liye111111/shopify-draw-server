@@ -32,8 +32,11 @@ public class ActivityService {
     }
 
 
-    public int updateStatus(Long id, ActivityStatus status) {
-        return activityMapper.updateStatus(id,status);
+    public Activity updateStatus(Long id, ActivityStatus status) {
+        activityMapper.updateStatus(id, status);
+        return activityMapper.selectById(Activity.builder()
+                .id(id)
+                .build());
     }
 
     public Activity update(UpdateActivityParam param) {

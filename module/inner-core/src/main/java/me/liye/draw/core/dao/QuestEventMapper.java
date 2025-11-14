@@ -15,14 +15,15 @@ public interface QuestEventMapper extends BaseMapperPgsql<QuestEvent> {
                 ID BIGSERIAL PRIMARY KEY,
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                event_id VARCHAR(128) NOT NULL,
                 quest_id VARCHAR(512) NOT NULL,
                 event_name VARCHAR(128) NOT NULL,
-                body JSONB NOT NULL,
+                body JSONB NULL,
                 JSON_DATA JSONB NOT NULL
             );
             """;
 
     String TABLE = "quest_event";
-    String COLUMNS = "id, gmt_create,gmt_modified, quest_id, event_name,body, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, quest_id, event_id,event_name,body, json_data";
 
 }

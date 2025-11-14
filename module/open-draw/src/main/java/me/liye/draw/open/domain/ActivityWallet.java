@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
+import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
 
 /**
  * 活动钱包
@@ -16,7 +16,7 @@ import me.liye.open.share.dataobject.BaseDataObjectWithJsonColumn;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivityWallet extends BaseDataObjectWithJsonColumn {
+public class ActivityWallet extends BaseDataObjectWithEmptyJsonColumn {
     String shopDomain;
     String walletAddress;
 }

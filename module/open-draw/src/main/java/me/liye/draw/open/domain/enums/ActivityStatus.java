@@ -26,7 +26,7 @@ public enum ActivityStatus {
     AWAITING_FUNDING,
 
     /**
-     * 注资完成，参数锁定
+     * 注资完成，参数锁定; 由web3发起event: merchantInit 触发
      */
     FUNDED_READY,
 
@@ -44,7 +44,7 @@ public enum ActivityStatus {
      */
     DRAW_COMPLETED,
     /**
-     * 领奖开放
+     * 领奖开放; 由web3发起event: airdropOpen 触发
      */
     CLAIM_OPEN,
     /**
