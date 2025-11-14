@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import me.liye.draw.core.dao.QuestEventMapper;
 import me.liye.draw.core.service.ActivityService;
 import me.liye.draw.core.service.TicketService;
 import me.liye.draw.open.domain.Activity;
+import me.liye.draw.open.domain.QuestEvent;
 import me.liye.draw.open.domain.Ticket;
 import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.param.GetActivityParam;
 import me.liye.draw.open.domain.param.ListActivityParam;
 import me.liye.draw.open.domain.param.ListTicketParam;
-import me.liye.draw.open.domain.param.UpdateActivityParam;
 import me.liye.open.share.page.PageQueryResult;
 import me.liye.open.share.rpc.Pagination;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 public class QuestController {
     final ActivityService activityService;
     final TicketService ticketService;
+    final QuestEventMapper questEventMapper;
 
     /**
      * 活动列表，含奖励
@@ -108,13 +110,17 @@ public class QuestController {
         }
     }
 
-    @PostMapping("/updateStatus")
-    public Result<Quest> updateStatus(@RequestBody UpdateQuestStatusParam param) {
-        activityService.update(UpdateActivityParam.builder()
-                .id(param.getQuestId())
-                .status(param.getStatus())
-                .build());
-        return get(param.getQuestId(), false);
+    /**
+     * 接收web3的quest事件
+     */
+    @PostMapping("/event")
+    public Result<Map<String, ?>> event(@RequestBody QuestEvent param) {
+//        activityService.update(UpdateActivityParam.builder()
+//                .id(param.getQuestId())
+//                .status(param.getStatus())
+//                .build());
+        questEventMapper.insert(param);
+        return Result.success(Map.of("task-id", param.getId()));
     }
 
     private static Quest toQuest(Activity row) {
@@ -210,7 +216,6 @@ public class QuestController {
         @JsonProperty("status")
         ActivityStatus status;
     }
-
 
     @Data
     @SuperBuilder

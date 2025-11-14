@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liye on 2025-09-17.
@@ -20,7 +21,8 @@ public class DrawMapperConfig {
     public JsonTypeRegister jsonTypeRegister() {
         return () -> List.of(DrawRule.class,
                 ActivityTarget.class,
-                DrawTriggerType.class
+                DrawTriggerType.class,
+                Map.class
         );
     }
 }
