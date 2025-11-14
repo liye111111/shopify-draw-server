@@ -23,7 +23,7 @@ public class QuestEvent extends BaseDataObjectWithEmptyJsonColumn {
     String eventId;
     @JsonProperty("quest_id")
     Long questId;
-    @JsonProperty("eventName")
+    @JsonProperty("event_name")
     String eventName;
     @JsonProperty("body")
     Map<String, ?> body;
