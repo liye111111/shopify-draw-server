@@ -1,6 +1,7 @@
 package me.liye.draw.core.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -71,6 +72,10 @@ public class QuestController {
      * 构建quest属性
      */
     private List<Quest> buildQuests(List<Activity> activities) {
+        if (activities.isEmpty()) {
+            return Lists.newArrayList();
+        }
+
         List<Long> activityIds = activities.stream().map(Activity::getId).toList();
 
         Map<Long, List<QuestItem>> questItemMap = ticketService.list(ListTicketParam.builder()

@@ -61,6 +61,9 @@ public class OrderService {
 
     public List<ShopifyOrder> list(ListShopifyOrderParam param) {
         List<ShopifyOrder> rows = shopifyOrderMapper.list(param);
+        if (rows.isEmpty()) {
+            return rows;
+        }
 
         Map<Long, Ticket> ticketMap = ticketService.list(ListTicketParam.builder()
                         .orderIds(rows.stream().map(ShopifyOrder::getId).toList())
