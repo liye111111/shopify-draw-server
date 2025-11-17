@@ -29,4 +29,9 @@ public class BuyerController {
     public RpcResult<Buyer> get(GetBuyerParam param) {
         return success(buyerService.get(param));
     }
+
+    @PostMapping("/create")
+    public RpcResult<Buyer> add(@RequestBody Buyer param) {
+        return success(buyerService.upsert(param));
+    }
 }
