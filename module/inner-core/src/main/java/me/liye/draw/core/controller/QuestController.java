@@ -142,6 +142,7 @@ public class QuestController {
 
     private static QuestItem toQuestItem(Ticket ticket) {
         return QuestItem.builder()
+                .ticketId(ticket.getId())
                 .questId(ticket.getActivityId())
                 .email(ticket.getEmail())
                 .address(ticket.getWalletAddress())
@@ -200,6 +201,8 @@ public class QuestController {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class QuestItem {
+        @JsonProperty("ticket_id")
+        Long ticketId;
         @JsonProperty("quest_id")
         Long questId;
         @JsonProperty("email")

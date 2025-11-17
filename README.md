@@ -15,3 +15,16 @@ https://liyeshop1.myshopify.com/
 
 quest.total_amount:  对应奖池总金额，和梯度无关
 quest.reward_token:  缺失
+
+
+#  Mock Data
+
+
+
+买家钱包地址
+```aiignore
+4joBhqhv6YMvCBeQ8Lr5ESePXkmmZVKG8CohBS9TMFHs
+FFbKeXiA2Bd74WJeGvfRGUApEHPwk4wsZN95i7wtTaFr
+5y9hEPFLKLodMArJQnLfwzCJyWZQ5uT2p3rd4tqmMCMZ
+2TVLhadCawcrfhdAUXxq5vEaZe6ckAsPcSZb38JWaFNT
+```
