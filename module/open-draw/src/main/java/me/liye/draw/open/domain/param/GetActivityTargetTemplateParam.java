@@ -1,4 +1,4 @@
-package me.liye.draw.open.domain;
+package me.liye.draw.open.domain.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,27 +8,25 @@ import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BaseDTO;
 
 /**
- * 活动目标条目
- * Created by liye on 2025-10-20.
+ * 获取活动目标模板参数
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivityTargetEntry extends BaseDTO {
+public class GetActivityTargetTemplateParam extends BaseDTO {
     /**
-     * 完成百分比：0-100
+     * gmv目标
      */
-    int percent;
+    String gmvTarget;
     /**
-     * 奖池金额
+     * 奖池目标
      */
-    String rewardAmount;
+    String rewardTarget;
 
     /**
-     * gmv金额
+     * 模板id
      */
-    String gmtAmount;
-
+    String templateId;
 }

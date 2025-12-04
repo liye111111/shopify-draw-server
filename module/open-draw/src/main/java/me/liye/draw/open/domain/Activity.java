@@ -22,10 +22,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class Activity extends BaseDataObjectWithEmptyJsonColumn {
     /**
-     * 店铺
-     */
-    String shopDomain;
-    /**
      * 活动名称
      */
     String name;
@@ -96,4 +92,9 @@ public class Activity extends BaseDataObjectWithEmptyJsonColumn {
      * dev: DCDpBz2wzXpX4rD1F7o9jfxnzGEJ4AsP4TgDaaVi6ude
      */
     String rewardToken;
+
+    /**
+     * 币种
+     */
+    String currency;
 }

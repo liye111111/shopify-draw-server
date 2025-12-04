@@ -26,7 +26,7 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                 gmt_modified TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
                 is_deleted BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
             
-                shop_domain VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
+                shop_id VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
                 name VARCHAR(128) NOT NULL,                                 -- 活动名称
                 description VARCHAR(2048),                                  -- 活动描述
                 background_image VARCHAR(2048),                             -- 活动背景图
@@ -44,15 +44,16 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                 min_order_single_spend VARCHAR(128),                              -- 单笔订单参与门槛
                 wallet_address VARCHAR(1024),                                -- 钱包地址（如果奖励为代币或链上资产）
                 reward_token VARCHAR(1024),                                -- 充值金额
+                currency VARCHAR(32),                                -- 币种
             
                 json_data JSONB NOT NULL                                    -- 预留扩展字段（活动自定义配置）
             );
             """;
 
     String TABLE = "activity";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, name,description," +
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id, name,description," +
             " start_time, end_time,draw_trigger_type,background_image, preview_image," +
-            "activity_target,draw_rule, min_user_total_spend,min_order_single_spend,wallet_address,reward_token,json_data";
+            "activity_target,draw_rule, min_user_total_spend,min_order_single_spend,wallet_address,reward_token,currency,json_data";
 
 
     @PageQuery

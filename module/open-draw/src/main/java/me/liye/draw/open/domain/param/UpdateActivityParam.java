@@ -24,10 +24,6 @@ import java.util.Date;
 public class UpdateActivityParam extends BaseDTO {
     Long id;
     /**
-     * 店铺
-     */
-    String shopDomain;
-    /**
      * 活动名称
      */
     String name;
@@ -89,4 +85,8 @@ public class UpdateActivityParam extends BaseDTO {
      */
     String walletAddress;
 
+    /**
+     * 币种
+     */
+    String currency;
 }

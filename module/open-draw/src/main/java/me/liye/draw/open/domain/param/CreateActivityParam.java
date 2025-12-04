@@ -5,10 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.draw.open.domain.ActivityTarget;
-import me.liye.draw.open.domain.DrawRule;
-import me.liye.draw.open.domain.enums.ActivityStatus;
-import me.liye.draw.open.domain.enums.DrawTriggerType;
 import me.liye.open.share.rpc.BaseDTO;
 
 import java.util.Date;
@@ -22,10 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateActivityParam extends BaseDTO {
-    /**
-     * 店铺
-     */
-    String shopDomain;
+
     /**
      * 活动名称
      */
@@ -44,52 +37,5 @@ public class CreateActivityParam extends BaseDTO {
      */
     Date endTime;
 
-    DrawTriggerType drawTriggerType;
 
-    /**
-     * 背景图片(1200x400)
-     */
-    String backgroundImage;
-
-    /**
-     * 预览图片(400*400)
-     */
-    String previewImage;
-
-    /**
-     * 活动目标
-     */
-    ActivityTarget activityTarget;
-
-    /**
-     * 用户总消费参与抽奖门槛
-     */
-    String minUserTotalSpend;
-
-    /**
-     * 单笔订单抽奖门槛
-     */
-    String minOrderSingleSpend;
-
-    /**
-     * 活动状态
-     */
-    ActivityStatus status;
-
-    /**
-     * 抽奖规则
-     */
-
-    DrawRule drawRule;
-
-
-    /**
-     * 钱包地址
-     */
-    String walletAddress;
-
-    /**
-     * 充值金额
-     */
-    String rewardToken;
 }
