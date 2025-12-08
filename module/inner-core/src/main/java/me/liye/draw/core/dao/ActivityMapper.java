@@ -40,8 +40,9 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                 activity_target JSONB,                                      -- 活动目标配置（目标用户/人群条件等）
                 draw_rule JSONB,                                            -- 抽奖规则定义（奖池金额、策略、上下限比例等）
             
-                min_user_total_spend VARCHAR(128),                              -- 用户累计消费门槛
-                min_order_single_spend VARCHAR(128),                              -- 单笔订单参与门槛
+                participant_limit VARCHAR(128), -- 参与抽奖用户限制
+                mini_user_total_spend VARCHAR(128),                           -- 用户累计消费门槛
+                mini_order_single_spend VARCHAR(128),                         -- 单笔订单参与门槛
                 wallet_address VARCHAR(1024),                                -- 钱包地址（如果奖励为代币或链上资产）
                 reward_token VARCHAR(1024),                                -- 充值金额
                 currency VARCHAR(32),                                -- 币种
@@ -53,7 +54,7 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
     String TABLE = "activity";
     String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id, name,description," +
             " start_time, end_time,draw_trigger_type,background_image, preview_image," +
-            "activity_target,draw_rule, min_user_total_spend,min_order_single_spend,wallet_address,reward_token,currency,json_data";
+            "activity_target,draw_rule,participant_limit, mini_user_total_spend,mini_order_single_spend,wallet_address,reward_token,currency,json_data";
 
 
     @PageQuery

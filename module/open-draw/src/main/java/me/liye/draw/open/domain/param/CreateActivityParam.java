@@ -37,5 +37,14 @@ public class CreateActivityParam extends BaseDTO {
      */
     Date endTime;
 
+    /**
+     * 最小订单金额
+     */
+    String miniOrderSingleSpend;
+    /**
+     * 参与抽奖人数限制
+     */
+    String participantLimit;
+
 
 }

@@ -58,6 +58,9 @@ public class UpdateActivityParam extends BaseDTO {
      */
     ActivityTarget activityTarget;
 
+
+    String participantLimit;
+
     /**
      * 用户参与抽奖消费门槛
      */
@@ -66,7 +69,7 @@ public class UpdateActivityParam extends BaseDTO {
     /**
      * 订单消费门槛
      */
-    String minOrderSpend;
+    String miniOrderSingleSpend;
 
     /**
      * 活动状态

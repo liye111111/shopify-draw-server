@@ -82,7 +82,7 @@ public class ActivityService {
         List<Activity> rows = list(ListActivityParam.builder().build());
         return rows.stream().filter(
                 it -> {
-                    BigDecimal threshold = new BigDecimal(it.getMinOrderSingleSpend());
+                    BigDecimal threshold = new BigDecimal(it.getMiniOrderSingleSpend());
                     BigDecimal orderPrice = new BigDecimal(order.getPrice());
                     return orderPrice.compareTo(threshold) >= 0;
                 }
