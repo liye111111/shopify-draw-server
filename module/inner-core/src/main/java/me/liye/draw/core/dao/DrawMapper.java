@@ -43,7 +43,7 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
             return """
                     <script>
                     SELECT %s FROM %s WHERE IS_DELETED = FALSE
-                    <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
+                    <if test="shopId != null">and shop_id=#{shopId}</if>
                     <if test="activityId != null">and activity_id=#{activityId}</if>                   
                     order by gmt_create desc
                     </script>

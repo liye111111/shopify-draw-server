@@ -48,20 +48,20 @@ public interface BuyerMapper extends BaseMapperPgsql<Buyer> {
     class InnerSqlProvider {
         public String get() {
             return """
-                    select %s from %s where is_deleted=false and shop_id= #{shopDomain} and email = #{email}
+                    select %s from %s where is_deleted=false and shop_id= #{shopId} and email = #{email}
                     """.formatted(COLUMNS, TABLE);
         }
 
         public String update() {
             return """
-                    update %s set wallet_address = #{walletAddress} where shop_id=#{shopDomain} and email = #{email}
+                    update %s set wallet_address = #{walletAddress} where shop_id=#{shopId} and email = #{email}
                     """.formatted(TABLE);
         }
 
         public String list() {
             return """
                     <script>
-                    select %s from %s where is_deleted=false and shop_id= #{shopDomain}
+                    select %s from %s where is_deleted=false and shop_id= #{shopId}
                     <if test="emails != null">
                     and email in (
                         <foreach item='email' collection='emails' separator=','>

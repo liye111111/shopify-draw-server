@@ -42,7 +42,9 @@ public interface ShopifyOrderMapper extends BaseMapperPgsql<ShopifyOrder> {
     @PageQuery
     @Select("<script>select " + COLUMNS + " from " + TABLE + " where IS_DELETED=false"
             + """
-            <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
+            <if test="shopId != null">and shop_id=#{shopId}</if>
+            <if test="orderId != null">and order_id=#{orderId}</if>
+            <if test="topic != null">and topic=#{topic}</if>
             order by gmt_create desc
             </script>"""
     )

@@ -59,7 +59,7 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
             return """
                     <script>
                     SELECT %s from %s WHERE IS_DELETED = false
-                    <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
+                    <if test="shopId != null">and shop_id=#{shopId}</if>
                     <if test="email != null">and email=#{email}</if>
                     <if test="orderIds != null">
                     and order_id in (

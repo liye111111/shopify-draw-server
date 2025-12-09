@@ -18,4 +18,8 @@ import me.liye.open.share.rpc.BasePageQuery;
 public class ListShopifyOrderParam extends BasePageQuery {
     String orderId;
     String email;
+    String topic;
+    boolean excludeTickets;
+
+
 }

@@ -65,12 +65,15 @@ public class OrderService {
             return rows;
         }
 
-        Map<Long, Ticket> ticketMap = ticketService.list(ListTicketParam.builder()
-                        .orderIds(rows.stream().map(ShopifyOrder::getId).toList())
-                        .build())
-                .stream().collect(Collectors.toMap(Ticket::getOrderId, it -> it));
+        if (!param.isExcludeTickets()) {
+            Map<Long, Ticket> ticketMap = ticketService.list(ListTicketParam.builder()
+                            .orderIds(rows.stream().map(ShopifyOrder::getId).toList())
+                            .build())
+                    .stream().collect(Collectors.toMap(Ticket::getOrderId, it -> it));
 
-        rows.forEach(it -> it.setTicket(ticketMap.get(it.getId())));
+            rows.forEach(it -> it.setTicket(ticketMap.get(it.getId())));
+        }
+
 
         return rows;
     }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.service.OrderService;
 import me.liye.draw.core.util.HmacUtil;
 import me.liye.draw.open.domain.ShopifyOrder;
+import me.liye.draw.open.domain.param.ListShopifyOrderParam;
 import me.liye.draw.open.domain.shopify.Order;
 import me.liye.open.share.rpc.RpcResult;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,9 +58,15 @@ public class ShopifyOrderWebhookController {
 //            ShopifyOrder order = ShopifyOrder.fromJson(payload);
 
             // 3. 幂等检查
-//            if (orderTxRepository.existsByOrderId(order.getId())) {
-//                return ResponseEntity.ok("Order already processed");
-//            }
+            List<ShopifyOrder> rows = orderService.list(ListShopifyOrderParam.builder()
+                    .shopId(shopId)
+                    .topic(topic)
+                    .orderId(orderId)
+                    .excludeTickets(true)
+                    .build());
+            if (!rows.isEmpty()) {
+                return ResponseEntity.ok("Order already processed");
+            }
 
             // 4. 调用区块链合约
 //            String txHash = blockchainService.deposit(order.getId(), order.getTotalPrice());
