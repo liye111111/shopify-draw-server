@@ -72,6 +72,7 @@ public interface ActivityMapper extends BaseMapperPgsql<Activity> {
                     <if test='status != null'>and status=#{status}</if>
                     <if test='startAtGrateThen != null'>and start_time &gt;= #{startAtGrateThen}</if>
                     <if test='startAtLessThen != null'>and start_time &lt; #{startAtGrateThen}</if>
+                    <if test='shopId != null'>and shop_id=#{shopId}</if>
                     ORDER BY GMT_CREATE DESC
                     </script>
                     """.formatted(COLUMNS, TABLE);

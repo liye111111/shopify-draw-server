@@ -23,7 +23,7 @@ public class BuyerService {
 
     public Buyer upsert(Buyer buyer) {
         int updated = buyerMapper.update(UpdateBuyerParam.builder()
-                .shopDomain(buyer.getShopDomain())
+                .shopId(buyer.getShopId())
                 .email(buyer.getEmail())
                 .walletAddress(buyer.getWalletAddress())
                 .build());

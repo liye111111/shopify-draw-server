@@ -18,7 +18,5 @@ import me.liye.open.share.rpc.BasePageQuery;
 public class ListDrawParam extends BasePageQuery {
     String name;
 
-    String shopDomain;
-
     Long activityId;
 }

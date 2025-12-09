@@ -21,7 +21,7 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
+                SHOP_ID VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
                 activity_id bigint,
                 name VARCHAR(128),
                 status VARCHAR(128) NOT NULL,
@@ -32,7 +32,7 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
             """;
 
     String TABLE = "draw";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain,activity_id, name, start_time, end_time, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id,activity_id, name, start_time, end_time, json_data";
 
     @PageQuery
     @SelectProvider(type = InnerSqlProvider.class, method = "list")
@@ -43,7 +43,7 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
             return """
                     <script>
                     SELECT %s FROM %s WHERE IS_DELETED = FALSE
-                    <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
+                    <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
                     <if test="activityId != null">and activity_id=#{activityId}</if>                   
                     order by gmt_create desc
                     </script>

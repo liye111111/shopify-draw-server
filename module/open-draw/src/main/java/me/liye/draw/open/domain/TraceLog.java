@@ -18,7 +18,6 @@ import me.liye.open.share.dataobject.JsonDataProperty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TraceLog extends BaseDataObjectWithEmptyJsonColumn {
-    String shopDomain;
     String name;
     @JsonDataProperty
     Object data;

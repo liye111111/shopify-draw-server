@@ -17,7 +17,6 @@ import me.liye.open.share.rpc.BaseDTO;
 @NoArgsConstructor
 public class CreateTicketParam extends BaseDTO {
     String ticketSn;
-    String shopDomain;
     Long activityId;
     String activityRuleName;
     Long orderId;

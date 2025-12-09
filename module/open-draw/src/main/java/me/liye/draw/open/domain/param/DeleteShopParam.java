@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BaseDTO;
 
+import java.util.List;
+
 /**
  * Created by liye on 2025-09-28.
  */
@@ -16,5 +18,5 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeleteShopParam extends BaseDTO {
-    String shopDomain;
+    List<String> shopIds;
 }

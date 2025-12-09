@@ -18,7 +18,7 @@ import java.util.List;
 @Mapper
 public interface BuyerMapper extends BaseMapperPgsql<Buyer> {
     String TABLE = "buyer";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain,email,wallet_address,json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id,email,wallet_address,json_data";
     String DDL = """
             drop table if exists buyer;
             CREATE TABLE buyer
@@ -27,7 +27,7 @@ public interface BuyerMapper extends BaseMapperPgsql<Buyer> {
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
+                SHOP_ID VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
                 wallet_address   VARCHAR(255) NOT NULL,
                 email        VARCHAR(255) NOT NULL,
                 status VARCHAR(128) NOT NULL,
@@ -48,20 +48,20 @@ public interface BuyerMapper extends BaseMapperPgsql<Buyer> {
     class InnerSqlProvider {
         public String get() {
             return """
-                    select %s from %s where is_deleted=false and shop_domain= #{shopDomain} and email = #{email}
+                    select %s from %s where is_deleted=false and shop_id= #{shopDomain} and email = #{email}
                     """.formatted(COLUMNS, TABLE);
         }
 
         public String update() {
             return """
-                    update %s set wallet_address = #{walletAddress} where shop_domain=#{shopDomain} and email = #{email}
+                    update %s set wallet_address = #{walletAddress} where shop_id=#{shopDomain} and email = #{email}
                     """.formatted(TABLE);
         }
 
         public String list() {
             return """
                     <script>
-                    select %s from %s where is_deleted=false and shop_domain= #{shopDomain}
+                    select %s from %s where is_deleted=false and shop_id= #{shopDomain}
                     <if test="emails != null">
                     and email in (
                         <foreach item='email' collection='emails' separator=','>

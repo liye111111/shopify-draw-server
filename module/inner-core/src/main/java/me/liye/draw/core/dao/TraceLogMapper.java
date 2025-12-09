@@ -21,14 +21,14 @@ public interface TraceLogMapper extends BaseMapperPgsql<TraceLog> {
                 ID BIGSERIAL PRIMARY KEY,
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,
+                SHOP_ID VARCHAR(512) NOT NULL,
                 name VARCHAR(128) NOT NULL,
                 JSON_DATA JSONB NOT NULL
             );
             """;
 
     String TABLE = "trace_log";
-    String COLUMNS = "id, gmt_create,gmt_modified, shop_domain, name, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, shop_id, name, json_data";
 
 
     @PageQuery

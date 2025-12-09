@@ -16,6 +16,9 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateShopParam extends BaseDTO {
+
+    String shopName;
+    String shopType;
     String shopDomain;
     String token;
 }

@@ -23,7 +23,10 @@ public interface ShopMapper extends BaseMapperPgsql<Shop> {
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,
+                SHOP_ID VARCHAR(512) NOT NULL,
+                SHOP_DOMAIN VARCHAR(512),
+                SHOP_NAME VARCHAR(512),
+                SHOP_TYPE VARCHAR(512),
                 TOKEN VARCHAR(512) NOT NULL,
                 status VARCHAR(128),
                 JSON_DATA JSONB
@@ -31,12 +34,12 @@ public interface ShopMapper extends BaseMapperPgsql<Shop> {
             """;
 
     String TABLE = "shop";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_domain, token, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_name,shop_id,shop_domain,shop_type, token, json_data";
 
     @PageQuery
     @Select("SELECT " + COLUMNS + " FROM " + TABLE + " WHERE IS_DELETED = false")
     List<Shop> list(ListShopParam param);
 
-    @Update("UPDATE " + TABLE + " SET IS_DELETED = true WHERE SHOP_DOMAIN = #{shopDomain}")
+    @Update("UPDATE " + TABLE + " SET IS_DELETED = true WHERE SHOP_ID = #{shopId}")
     void delete(DeleteShopParam param);
 }

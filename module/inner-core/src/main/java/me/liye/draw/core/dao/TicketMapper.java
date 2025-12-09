@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface TicketMapper extends BaseMapperPgsql<Ticket> {
     String TABLE = "ticket";
-    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,name, ticket_sn,status,email, wallet_address, activity_id,activity_rule_name, order_id, order_price,order_currency, tx_id, amount, json_data";
+    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_id,name, ticket_sn,status,email, wallet_address, activity_id,activity_rule_name, order_id, order_price,order_currency, tx_id, amount, json_data";
 
     String DDL = """
             DROP TABLE if exists ticket ;
@@ -25,7 +25,7 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,
+                SHOP_ID VARCHAR(512) NOT NULL,
                 name VARCHAR(128),
                 ticket_sn VARCHAR(128),
                 status VARCHAR(128),
@@ -59,7 +59,7 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
             return """
                     <script>
                     SELECT %s from %s WHERE IS_DELETED = false
-                    <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
+                    <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
                     <if test="email != null">and email=#{email}</if>
                     <if test="orderIds != null">
                     and order_id in (

@@ -16,7 +16,6 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateBuyerParam extends BaseDTO {
-    String shopDomain;
     String email;
     String walletAddress;
 }

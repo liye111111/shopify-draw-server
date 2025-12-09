@@ -16,8 +16,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateDrawParam extends BaseDTO {
-    @NotNull
-    String shopDomain;
 
     String name;
     @NotNull

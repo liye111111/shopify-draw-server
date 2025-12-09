@@ -18,6 +18,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListBuyerParam extends BasePageQuery {
-    String shopDomain;
     List<String> emails;
 }

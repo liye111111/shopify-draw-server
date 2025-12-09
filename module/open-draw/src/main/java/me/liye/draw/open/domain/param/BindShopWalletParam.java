@@ -16,6 +16,5 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BindShopWalletParam extends BaseDTO {
-    String shopDomain;
     String walletAddress;
 }

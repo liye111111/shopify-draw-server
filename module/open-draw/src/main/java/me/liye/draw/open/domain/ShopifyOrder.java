@@ -23,7 +23,6 @@ public class ShopifyOrder extends BaseDataObjectWithEmptyJsonColumn {
 
     String topic;
     String orderId;
-    String shopDomain;
 
     @JsonDataProperty
     Object payload;

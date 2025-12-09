@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListTicketParam extends BasePageQuery {
-    String shopDomain;
     String name;
     String email;
     Long activityId;

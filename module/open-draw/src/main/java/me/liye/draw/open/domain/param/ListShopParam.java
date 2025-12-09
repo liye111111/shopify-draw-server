@@ -16,5 +16,5 @@ import me.liye.open.share.rpc.BasePageQuery;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListShopParam extends BasePageQuery {
-    String shopDomain;
+    String nameLike;
 }

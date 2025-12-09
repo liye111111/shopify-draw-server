@@ -20,7 +20,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class Draw extends BaseDataObjectWithEmptyJsonColumn {
 
-    String shopDomain;
     String name;
     String status;
     Date startTime;

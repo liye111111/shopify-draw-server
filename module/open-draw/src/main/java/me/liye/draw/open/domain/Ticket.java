@@ -17,7 +17,6 @@ import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ticket extends BaseDataObjectWithEmptyJsonColumn {
-    String shopDomain;
 
     String name;
 

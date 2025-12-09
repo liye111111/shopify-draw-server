@@ -16,7 +16,9 @@ import me.liye.open.share.dataobject.BaseDataObjectWithEmptyJsonColumn;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Shop extends BaseDataObjectWithEmptyJsonColumn {
+    String shopName;
     String shopDomain;
+    String shopType;
     String token;
     String status;
 }

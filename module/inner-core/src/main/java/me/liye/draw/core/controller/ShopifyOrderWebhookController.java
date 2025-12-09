@@ -43,7 +43,7 @@ public class ShopifyOrderWebhookController {
         try {
             String hmacHeader = request.getHeader("X-Shopify-Hmac-SHA256");
             String topic = request.getHeader("X-Shopify-Topic");
-            String shopDomain = request.getHeader("X-Shopify-Shop-Domain");
+            String shopId = request.getHeader("X-Shopify-Shop-Domain");
             String orderId = request.getHeader("X-Shopify-Order-Id");
 
 
@@ -67,7 +67,7 @@ public class ShopifyOrderWebhookController {
             Order order = JSON.parseObject(payload, Order.class);
 
             ShopifyOrder row = ShopifyOrder.builder()
-                    .shopDomain(shopDomain)
+                    .shopId(shopId)
                     .orderId(orderId)
                     .topic(topic)
                     .herder(getHeaders(request))

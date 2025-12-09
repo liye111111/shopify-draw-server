@@ -36,16 +36,16 @@ public class TicketService {
         List<Ticket> rows = ticketMapper.list(param);
 
         Map<String, List<Ticket>> shopTickets = rows.stream()
-                .collect(Collectors.groupingBy(Ticket::getShopDomain));
+                .collect(Collectors.groupingBy(Ticket::getShopId));
         // 每个店铺单独处理，回填walletAddress
-        for (String shopDomain : shopTickets.keySet()) {
-            List<Ticket> tickets = shopTickets.get(shopDomain);
+        for (String shopId : shopTickets.keySet()) {
+            List<Ticket> tickets = shopTickets.get(shopId);
             List<String> emails = tickets.stream().map(Ticket::getEmail).toList();
 
 
             Map<String, String> emailWalletAddressMap = buyerService.list(ListBuyerParam.builder()
                             .pageSize(Integer.MAX_VALUE) // 注意要全部查询
-                            .shopDomain(shopDomain)
+                            .shopId(shopId)
                             .emails(emails)
                             .build())
                     .stream().collect(Collectors.toMap(Buyer::getEmail, Buyer::getWalletAddress));

@@ -40,7 +40,7 @@ public class OrderService {
                 // 符合条件，发放ticket
                 Ticket ticket = ticketService.create(CreateTicketParam.builder()
                         .ticketSn(UUIDUtil.generateShortTicketSn("T-"))// 生成ticketSn
-                        .shopDomain(order.getShopDomain())
+                        .shopId(order.getShopId())
                         .orderId(order.getId())
                         .activityId(activity.getId())
                         .activityRuleName(activity.getDrawRule().getName())

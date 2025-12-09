@@ -16,7 +16,6 @@ import me.liye.open.share.rpc.BaseDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reward extends BaseDTO {
-    String shopDomain;
     /**
      * 活动ID
      */

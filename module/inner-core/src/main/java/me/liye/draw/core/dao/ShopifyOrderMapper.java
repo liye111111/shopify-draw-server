@@ -21,7 +21,7 @@ public interface ShopifyOrderMapper extends BaseMapperPgsql<ShopifyOrder> {
                 GMT_CREATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- 创建时间
                 GMT_MODIFIED TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),-- 修改时间
                 IS_DELETED BOOLEAN NOT NULL DEFAULT FALSE,                  -- 逻辑删除
-                SHOP_DOMAIN VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
+                SHOP_ID VARCHAR(512) NOT NULL,                          -- 店铺域名（Shopify 唯一标识）
                 TOPIC VARCHAR(128) NOT NULL,                                -- Webhook 主题，比如 orders/paid
                 ORDER_ID VARCHAR(128) NOT NULL,                             -- Shopify 订单 ID
                 PRICE VARCHAR(128) NULL,
@@ -31,18 +31,18 @@ public interface ShopifyOrderMapper extends BaseMapperPgsql<ShopifyOrder> {
                 FIRST_NAME VARCHAR(128) NULL,
                 LAST_NAME VARCHAR(128) NULL,
                 JSON_DATA JSONB NOT NULL,                                   -- 存储订单原始 JSON
-                CONSTRAINT uk_shopify_order UNIQUE (SHOP_DOMAIN, TOPIC, ORDER_ID) -- 唯一约束
+                CONSTRAINT uk_shopify_order UNIQUE (SHOP_ID, TOPIC, ORDER_ID) -- 唯一约束
             );
             """;
 
     String TABLE = "shopify_order";
-    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_domain,topic,order_id,price,currency,customer_id,email,first_name,last_name,json_data";
+    String COLUMNS = "id, gmt_create, gmt_modified, is_deleted,shop_id,topic,order_id,price,currency,customer_id,email,first_name,last_name,json_data";
 
 
     @PageQuery
     @Select("<script>select " + COLUMNS + " from " + TABLE + " where IS_DELETED=false"
             + """
-            <if test="shopDomain != null">and shop_domain=#{shopDomain}</if>
+            <if test="shopDomain != null">and shop_id=#{shopDomain}</if>
             order by gmt_create desc
             </script>"""
     )
