@@ -47,7 +47,7 @@ public class TicketService {
      */
     public Ticket ineligible(CreateTicketParam param) {
         Ticket ticket = TypeConvertor.convert(param, Ticket.class);
-        ticket.setStatus(TicketStatus.INELIGIBLE.name());
+        ticket.setStatus(TicketStatus.SKIP_BY_ORDER_PRICE.name());
         ticketMapper.insert(ticket);
         return ticketMapper.selectById(ticket);
     }

@@ -9,6 +9,7 @@ import me.liye.draw.open.domain.Activity;
 import me.liye.draw.open.domain.ActivityTargetEntry;
 import me.liye.draw.open.domain.Draw;
 import me.liye.draw.open.domain.Ticket;
+import me.liye.draw.open.domain.enums.ActivityStatus;
 import me.liye.draw.open.domain.enums.DrawStatus;
 import me.liye.draw.open.domain.enums.TicketStatus;
 import me.liye.draw.open.domain.param.CreateDrawParam;
@@ -110,7 +111,7 @@ public class DrawService {
             draw(tickets, activity, draw);
 
             for (Ticket ticket : tickets) {
-                if (!ticket.getStatus().equals(TicketStatus.INELIGIBLE.name())) {
+                if (!ticket.getStatus().equals(TicketStatus.SKIP_BY_ORDER_PRICE.name())) {
                     ticketService.updateDrawResult(ticket.getId(), ticket.getStatus(), ticket.getAmount(), ticket.getRandomSeed());
                 }
             }
@@ -134,17 +135,20 @@ public class DrawService {
                             .build()
             );
 
+            activityService.updateStatus(activity.getId(), ActivityStatus.DRAW_RUNNING);
 
             draw(tickets, activity, draw);
 
             for (Ticket ticket : tickets) {
-                if (!ticket.getStatus().equals(TicketStatus.INELIGIBLE.name())) {
+                if (!ticket.getStatus().equals(TicketStatus.SKIP_BY_ORDER_PRICE.name())) {
                     ticketService.updateDrawResult(ticket.getId(), ticket.getStatus(), ticket.getAmount(), ticket.getRandomSeed());
                 }
             }
             draw.setTickets(tickets);
             draw.setStatus(DrawStatus.END.name());
             drawMapper.updateById(draw);
+            // 更新为抽奖完成
+            activityService.updateStatus(activity.getId(), ActivityStatus.DRAW_COMPLETED);
             return draw;
         }
 
@@ -154,6 +158,9 @@ public class DrawService {
             double totalGmv = tickets.stream()
                     .mapToDouble(ticket -> Double.parseDouble(ticket.getOrderPrice()))
                     .sum();
+
+            double serviceFee = totalGmv * serviceFeeRate;
+            draw.setServiceFee(String.valueOf(serviceFee));
 
             List<ActivityTargetEntry> gmtTargets = activity.getActivityTarget().getEntries();
             // 计算梯度gmv目标
@@ -171,28 +178,33 @@ public class DrawService {
             if (gmtTarget == null) {
                 log.warn("no gmt target complete，activityId={},totalGmv={}", activity.getId(), totalGmv);
                 draw.setInfo("No matching GMV target found.");
+                for (Ticket ticket : tickets) {
+                    ticket.setStatus(TicketStatus.SKIP_BY_GMV_TARGET.name());
+                }
+
                 return;
             }
 
-
             // 奖池扣除服务费
             double reward = Double.parseDouble(gmtTarget.getRewardAmount());
-            double serviceFee = reward * serviceFeeRate;
             // 保存命中的梯度目标
             draw.setReward(gmtTarget.getRewardAmount());
-            draw.setServiceFee(String.valueOf(serviceFee));
+
             // 剩余奖池金额
             reward = reward - serviceFee;
             if (reward <= 0) {
                 log.warn("no reward,activityId={},totalGmv={}", activity.getId(), totalGmv);
                 draw.setInfo("Draw taget balance is zero after service fee deduction.");
+                for (Ticket ticket : tickets) {
+                    ticket.setStatus(TicketStatus.SKIP_BY_SERVICE_FEE.name());
+                }
                 return;
             }
 
 
             // 去掉不满足梯度目标的ticket
             tickets = tickets.stream().filter(it ->
-                    !TicketStatus.INELIGIBLE.name().equals(it.getStatus())
+                    !TicketStatus.SKIP_BY_ORDER_PRICE.name().equals(it.getStatus())
 
             ).toList();
 

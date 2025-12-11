@@ -40,6 +40,10 @@ public enum ActivityStatus {
     CLOSED,
 
     /**
+     * 抽奖计算中
+     */
+    DRAW_RUNNING,
+    /**
      * 系统计算开奖
      */
     DRAW_COMPLETED,
