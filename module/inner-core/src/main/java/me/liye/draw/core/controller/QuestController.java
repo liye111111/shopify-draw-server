@@ -48,7 +48,6 @@ import java.util.stream.Collectors;
 public class QuestController {
     // 5% * 10e9
     public static final long DENOM = 1_000_000_000L;  // 精度扩大倍数
-    public static final long SERVICE_FEE_RATE = 50_000_000L; // 5% = 0.05 * DENOM
     final ActivityService activityService;
     final DrawService drawService;
     final TicketService ticketService;
@@ -211,8 +210,6 @@ public class QuestController {
                 .endAt(row.getEndTime())
                 .merchantAddress(row.getWalletAddress())
                 .rewardToken(row.getRewardToken())
-                // 服务费，mock
-                .serviceFee(10 * SERVICE_FEE_RATE)
                 .build();
     }
 
