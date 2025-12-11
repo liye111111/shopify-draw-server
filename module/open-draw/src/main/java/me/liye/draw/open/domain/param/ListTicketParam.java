@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import me.liye.draw.open.domain.Ticket;
+import me.liye.draw.open.domain.enums.TicketStatus;
 import me.liye.open.share.rpc.BasePageQuery;
 
 import java.util.List;
@@ -26,6 +26,7 @@ public class ListTicketParam extends BasePageQuery {
     List<Long> orderIds;
     List<Long> activityIds;
 
-    Ticket.TicketStatus status;
+    TicketStatus status;
 
+    boolean includeOrder;
 }

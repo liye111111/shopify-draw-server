@@ -4,25 +4,28 @@ import cn.hutool.core.thread.NamedThreadFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.dao.DrawMapper;
-import me.liye.draw.core.dao.TicketMapper;
 import me.liye.draw.core.util.DrawUtil;
 import me.liye.draw.open.domain.Activity;
+import me.liye.draw.open.domain.ActivityTargetEntry;
 import me.liye.draw.open.domain.Draw;
 import me.liye.draw.open.domain.Ticket;
+import me.liye.draw.open.domain.enums.DrawStatus;
+import me.liye.draw.open.domain.enums.TicketStatus;
 import me.liye.draw.open.domain.param.CreateDrawParam;
+import me.liye.draw.open.domain.param.GetActivityParam;
 import me.liye.draw.open.domain.param.ListDrawParam;
 import me.liye.draw.open.domain.param.ListTicketParam;
 import me.liye.open.share.util.TypeConvertor;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * Created by liye on 2025-09-19.
@@ -33,11 +36,16 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DrawService {
     final ActivityService activityService;
     final DrawMapper drawMapper;
-    final TicketMapper ticketMapper;
-    final TraceLogService traceLogService;
+    final TicketService ticketService;
 
-    @Value("${applyRewardApi:http://localhost:8080/mock/applyReward}")
-    String applyRewardApi;
+//    @Value("${applyRewardApi:http://localhost:8080/mock/applyReward}")
+//    String applyRewardApi;
+
+    @Value("${draw.serviceFeeRate:0.03}")
+    Double serviceFeeRate;
+
+    @Value("${draw.rewardRandomFactor:0.2}")
+    Double rewardRandomFactor;
 
     final static ExecutorService executorService = new ThreadPoolExecutor(
             4,
@@ -51,12 +59,20 @@ public class DrawService {
     public Draw create(CreateDrawParam param) {
         Draw row = TypeConvertor.convert(param, Draw.class);
         drawMapper.insert(row);
-        executorService.execute(
-                new DrawTask(
-                        row.getId(),
-                        param.isForce())
-        );
-        return drawMapper.selectById(row);
+        DrawTask task = new DrawTask(
+                row.getId(),
+                param.isForce());
+
+        if (param.isSyncRun()) {
+            return task.syncRun();
+        } else {
+            executorService.execute(
+                    task
+            );
+            return drawMapper.selectById(row);
+        }
+
+
     }
 
     public List<Draw> list(ListDrawParam param) {
@@ -81,45 +97,131 @@ public class DrawService {
                     Activity.builder()
                             .id(draw.getActivityId())
                             .build());
-            List<Ticket> tickets = ticketMapper.list(
+
+
+            List<Ticket> tickets = ticketService.list(
                     ListTicketParam.builder()
                             .activityId(draw.getActivityId())
+                            .includeOrder(true)
                             .build()
             );
-            draw(tickets, activity, force);
-            // call web3 contract api
+
+
+            draw(tickets, activity, draw);
+
+            for (Ticket ticket : tickets) {
+                if (!ticket.getStatus().equals(TicketStatus.INELIGIBLE.name())) {
+                    ticketService.updateDrawResult(ticket.getId(), ticket.getStatus(), ticket.getAmount(), ticket.getRandomSeed());
+                }
+            }
+            drawMapper.updateById(draw);
+        }
+
+        public Draw syncRun() {
+            Draw draw = drawMapper.selectById(Draw.builder().id(id).build());
+            draw.setStatus(DrawStatus.START.name());
+            drawMapper.updateById(draw);
+            //
+
+            Activity activity = activityService.get(
+                    GetActivityParam.builder().id(draw.getActivityId()).build());
+
+
+            List<Ticket> tickets = ticketService.list(
+                    ListTicketParam.builder()
+                            .activityId(draw.getActivityId())
+                            .includeOrder(true)
+                            .build()
+            );
+
+
+            draw(tickets, activity, draw);
+
+            for (Ticket ticket : tickets) {
+                if (!ticket.getStatus().equals(TicketStatus.INELIGIBLE.name())) {
+                    ticketService.updateDrawResult(ticket.getId(), ticket.getStatus(), ticket.getAmount(), ticket.getRandomSeed());
+                }
+            }
+            draw.setTickets(tickets);
+            draw.setStatus(DrawStatus.END.name());
+            drawMapper.updateById(draw);
+            return draw;
         }
 
         private void draw(List<Ticket> tickets, Activity activity,
-                          // 强制重抽
-                          boolean force) {
-            AtomicLong winCount = new AtomicLong(tickets.stream().filter(it -> it.getStatus().equals(Ticket.TicketStatus.WIN.name())).count());
+                          Draw draw) {
+            // 达成的gmv,含不满足抽奖目标的订单
+            double totalGmv = tickets.stream()
+                    .mapToDouble(ticket -> Double.parseDouble(ticket.getOrderPrice()))
+                    .sum();
+
+            List<ActivityTargetEntry> gmtTargets = activity.getActivityTarget().getEntries();
+            // 计算梯度gmv目标
+            for (ActivityTargetEntry gmtTarget : gmtTargets) {
+                gmtTarget.setGmvAmount(
+                        String.valueOf(
+                                gmtTarget.getPercent() / 100.0 * Double.parseDouble(activity.getActivityTarget().getGmvTarget())));
+            }
+            gmtTargets.sort((o1, o2) -> o2.getGmvAmount().compareTo(o1.getGmvAmount()));
+            // 满足gmv要求的最高梯度目标
+            ActivityTargetEntry gmtTarget = gmtTargets.stream()
+                    .filter(it -> totalGmv >= Double.parseDouble(it.getGmvAmount()))
+                    .findFirst().orElse(null);
+
+            if (gmtTarget == null) {
+                log.warn("no gmt target complete，activityId={},totalGmv={}", activity.getId(), totalGmv);
+                draw.setInfo("No matching GMV target found.");
+                return;
+            }
+
+
+            // 奖池扣除服务费
+            double reward = Double.parseDouble(gmtTarget.getRewardAmount());
+            double serviceFee = reward * serviceFeeRate;
+            // 保存命中的梯度目标
+            draw.setReward(gmtTarget.getRewardAmount());
+            draw.setServiceFee(String.valueOf(serviceFee));
+            // 剩余奖池金额
+            reward = reward - serviceFee;
+            if (reward <= 0) {
+                log.warn("no reward,activityId={},totalGmv={}", activity.getId(), totalGmv);
+                draw.setInfo("Draw taget balance is zero after service fee deduction.");
+                return;
+            }
+
+
+            // 去掉不满足梯度目标的ticket
+            tickets = tickets.stream().filter(it ->
+                    !TicketStatus.INELIGIBLE.name().equals(it.getStatus())
+
+            ).toList();
+
+            Map<String, Double> ticketWeightMap = tickets.stream()
+                    .collect(Collectors.toMap(
+                            Ticket::getTicketSn,
+                            it -> Double.parseDouble(it.getOrderPrice())
+                    ));
+
+            Map<String, Double> drawResult = DrawUtil.draw(ticketWeightMap,
+                    activity.getDrawRule().getUserLimitCount() == null || activity.getDrawRule().getUserLimitCount() <= 0 ? Integer.MAX_VALUE : activity.getDrawRule().getUserLimitCount(),
+                    reward,
+                    rewardRandomFactor
+            );
+
             for (Ticket ticket : tickets) {
-                Ticket.TicketStatus status = Ticket.TicketStatus.valueOf(ticket.getStatus());
-                if (!force && status != Ticket.TicketStatus.PENDING) {
-                    log.info("ticket: {} is not PENDING, skip it", ticket.getId());
-                    continue;
-                }
-
-//                if (winCount.intValue() > rule.getRewardAmount()) {
-//                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
-//                }
-
-                double r = RandomUtils.nextDouble(0, 1);
-                DrawUtil.DrawResult result = DrawUtil.draw(ticket.getTicketSn(), activity.getDrawRule().getWinRate(), r, Double.parseDouble(activity.getActivityTarget().getRewardTarget()));
-                if (result.isWin()) {
-                    ticket.setStatus(Ticket.TicketStatus.WIN.name());
-                    ticket.setAmount(String.valueOf(result.getAmount()));
-                    winCount.incrementAndGet();
+                Double ticketAmount = drawResult.getOrDefault(ticket.getTicketSn(), null);
+                if (ticketAmount == null) {
+                    log.info("ticket lose,ticketId={}", ticket.getId());
+                    ticket.setStatus(TicketStatus.LOSE.name());
                 } else {
-                    ticket.setStatus(Ticket.TicketStatus.LOSE.name());
+                    log.info("ticket win,ticketId={},amount={}", ticket.getId(), ticketAmount);
+                    ticket.setStatus(TicketStatus.WIN.name());
+                    ticket.setAmount(String.valueOf(ticketAmount));
                 }
-                // write to db
-                ticketMapper.updateDrawResult(ticket.getId(), ticket.getStatus(), ticket.getAmount(), String.valueOf(r));
-                //
-//                callWeb3Api(ticket);
+
             }
         }
+    }
 
 //        private void callWeb3Api(Ticket ticket) {
 //            // call web3 contract api
@@ -157,5 +259,5 @@ public class DrawService {
 //                        .build());
 //            }
 //        }
-    }
+
 }

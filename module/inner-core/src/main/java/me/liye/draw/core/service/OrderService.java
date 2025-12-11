@@ -29,16 +29,30 @@ public class OrderService {
     final TicketService ticketService;
 
     public ShopifyOrder create(ShopifyOrder order) {
+        Ticket ticket = null;
         try {
             // 保存order记录
             shopifyOrderMapper.insert(order);
+
             // 查询有效活动
             Activity activity = activityService.getMatchedActivity(order);
             if (activity == null) {
                 log.info("no matched activity for order: {}", order.getOrderId());
+
+                // 不符合条件, 生成未满足门槛ticket记录
+                ticket = ticketService.ineligible(CreateTicketParam.builder()
+                        .ticketSn(UUIDUtil.generateShortTicketSn("T-"))// 生成ticketSn
+                        .shopId(order.getShopId())
+                        .orderId(order.getId())
+                        .email(order.getEmail())
+                        .orderId(order.getId())
+                        .orderPrice(order.getPrice())
+                        .orderCurrency(order.getCurrency())
+                        .build());
+                log.info("create ineligible ticket {} for order: {}", ticket.getId(), order.getOrderId());
             } else {
                 // 符合条件，发放ticket
-                Ticket ticket = ticketService.create(CreateTicketParam.builder()
+                ticket = ticketService.create(CreateTicketParam.builder()
                         .ticketSn(UUIDUtil.generateShortTicketSn("T-"))// 生成ticketSn
                         .shopId(order.getShopId())
                         .orderId(order.getId())
@@ -48,13 +62,13 @@ public class OrderService {
                         .orderId(order.getId())
                         .orderPrice(order.getPrice())
                         .orderCurrency(order.getCurrency())
-//                        .amount(activity.getDrawRule().getMinRewardAmount())
                         .build());
                 log.info("matched activity: {}, create ticket {} for order: {}", activity.getId(), ticket.getId(), order.getOrderId());
             }
         } catch (DuplicateKeyException e) {
             log.warn("duplication order insert,skip it: {}", order.getOrderId(), e);
         }
+        order.setTicket(ticket);
         return order;
 
     }
@@ -65,7 +79,7 @@ public class OrderService {
             return rows;
         }
 
-        if (!param.isExcludeTickets()) {
+        if (param.isIncludeTickets()) {
             Map<Long, Ticket> ticketMap = ticketService.list(ListTicketParam.builder()
                             .orderIds(rows.stream().map(ShopifyOrder::getId).toList())
                             .build())

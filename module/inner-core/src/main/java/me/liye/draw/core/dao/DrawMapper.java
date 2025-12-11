@@ -27,12 +27,13 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
                 status VARCHAR(128) NOT NULL,
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
+                service_fee VARCHAR(128),  --服务费
                 JSON_DATA JSONB NOT NULL
             );
             """;
 
     String TABLE = "draw";
-    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id,activity_id, name, start_time, end_time, json_data";
+    String COLUMNS = "id, gmt_create,gmt_modified, is_deleted, status, shop_id,activity_id, name, start_time, end_time, service_fee,json_data";
 
     @PageQuery
     @SelectProvider(type = InnerSqlProvider.class, method = "list")
@@ -43,8 +44,16 @@ public interface DrawMapper extends BaseMapperPgsql<Draw> {
             return """
                     <script>
                     SELECT %s FROM %s WHERE IS_DELETED = FALSE
+                    <if test="status != null">and status=#{status}</if>
                     <if test="shopId != null">and shop_id=#{shopId}</if>
-                    <if test="activityId != null">and activity_id=#{activityId}</if>                   
+                    <if test="activityId != null">and activity_id=#{activityId}</if>
+                    <if test="activityIds != null">
+                    and activity_id in (
+                        <foreach item='activityId' collection='activityIds' separator=','>
+                            #{activityId}
+                        </foreach>
+                        )
+                    </if>                    
                     order by gmt_create desc
                     </script>
                     """.formatted(COLUMNS, TABLE);

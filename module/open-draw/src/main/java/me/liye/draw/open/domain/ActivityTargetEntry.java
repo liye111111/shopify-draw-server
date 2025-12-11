@@ -29,6 +29,6 @@ public class ActivityTargetEntry extends BaseDTO {
     /**
      * gmv金额
      */
-    String gmtAmount;
+    String gmvAmount;
 
 }

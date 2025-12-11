@@ -62,7 +62,7 @@ public class ShopifyOrderWebhookController {
                     .shopId(shopId)
                     .topic(topic)
                     .orderId(orderId)
-                    .excludeTickets(true)
+                    .includeTickets(false)
                     .build());
             if (!rows.isEmpty()) {
                 return ResponseEntity.ok("Order already processed");
@@ -93,7 +93,9 @@ public class ShopifyOrderWebhookController {
 
             return ResponseEntity.ok(
                     RpcResult.success(
-                            "Webhook processed, txHash=").dump()
+                            "Webhook processed,rowId=%s, ticketId=%s,status=%s".formatted(
+                                    row.getId(),
+                                    row.getTicket().getId(), row.getTicket().getStatus())).dump()
             );
 
         } catch (Exception e) {

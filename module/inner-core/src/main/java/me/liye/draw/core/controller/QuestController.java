@@ -10,14 +10,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.service.ActivityService;
+import me.liye.draw.core.service.DrawService;
 import me.liye.draw.core.service.QuestEventService;
 import me.liye.draw.core.service.TicketService;
 import me.liye.draw.open.domain.Activity;
+import me.liye.draw.open.domain.Draw;
 import me.liye.draw.open.domain.QuestEvent;
 import me.liye.draw.open.domain.Ticket;
 import me.liye.draw.open.domain.enums.ActivityStatus;
+import me.liye.draw.open.domain.enums.DrawStatus;
+import me.liye.draw.open.domain.enums.TicketStatus;
 import me.liye.draw.open.domain.param.GetActivityParam;
 import me.liye.draw.open.domain.param.ListActivityParam;
+import me.liye.draw.open.domain.param.ListDrawParam;
 import me.liye.draw.open.domain.param.ListTicketParam;
 import me.liye.open.share.page.PageQueryResult;
 import me.liye.open.share.rpc.Pagination;
@@ -45,6 +50,7 @@ public class QuestController {
     public static final long DENOM = 1_000_000_000L;  // 精度扩大倍数
     public static final long SERVICE_FEE_RATE = 50_000_000L; // 5% = 0.05 * DENOM
     final ActivityService activityService;
+    final DrawService drawService;
     final TicketService ticketService;
     final QuestEventService questEventService;
 
@@ -83,11 +89,26 @@ public class QuestController {
         }
 
         List<Long> activityIds = activities.stream().map(Activity::getId).toList();
+        // 完成的抽奖
+        List<Draw> draws = drawService.list(ListDrawParam.builder()
+                .activityIds(activityIds)
+                .status(DrawStatus.END.name())
+                .build());
+        // 若活动进行了多次抽奖，则取最后一次
+        Map<Long, Draw> drawMap = draws.stream()
+                .collect(Collectors.groupingBy(
+                        Draw::getActivityId,
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(Comparator.comparing(Draw::getGmtCreate)),
+                                opt -> opt.orElse(null)
+                        )
+                ));
+
 
         // 活动:tickets
         Map<Long, List<Ticket>> ticketMap = ticketService.list(ListTicketParam.builder()
                         .activityIds(activityIds)
-                        .status(Ticket.TicketStatus.WIN)
+                        .status(TicketStatus.WIN)
                         .build())
                 .stream()
                 .collect(Collectors.groupingBy(Ticket::getActivityId));
@@ -140,6 +161,9 @@ public class QuestController {
             Quest quest = toQuest(it);
             List<QuestItem> items = questItemMap.get(it.getId());
             quest.setItem(items);
+            //
+            Draw draw = drawMap.get(it.getId());
+            quest.setServiceFee(draw == null ? null : toLong(draw.getServiceFee()));
             return quest;
         }).toList();
     }

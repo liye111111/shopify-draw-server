@@ -68,6 +68,7 @@ public interface TicketMapper extends BaseMapperPgsql<Ticket> {
                         </foreach>
                         )
                     </if>
+                    <if test="activityId != null">and activity_id=#{activityId}</if>
                     <if test="activityIds != null">
                     and activity_id in (
                         <foreach item='activityId' collection='activityIds' separator=','>

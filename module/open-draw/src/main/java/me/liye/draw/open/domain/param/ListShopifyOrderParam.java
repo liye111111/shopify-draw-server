@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BasePageQuery;
 
+import java.util.List;
+
 /**
  * Created by liye on 2025-09-22.
  */
@@ -19,7 +21,8 @@ public class ListShopifyOrderParam extends BasePageQuery {
     String orderId;
     String email;
     String topic;
-    boolean excludeTickets;
+    boolean includeTickets;
+    List<Long> ids;
 
 
 }

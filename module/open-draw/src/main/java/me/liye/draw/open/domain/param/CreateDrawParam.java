@@ -2,7 +2,7 @@ package me.liye.draw.open.domain.param;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import me.liye.draw.open.domain.Draw;
+import me.liye.draw.open.domain.enums.DrawStatus;
 import me.liye.open.share.rpc.BaseDTO;
 
 import javax.validation.constraints.NotNull;
@@ -22,10 +22,15 @@ public class CreateDrawParam extends BaseDTO {
     Long activityId;
 
     @Builder.Default
-    String status = Draw.DrawStatus.START.name();
+    String status = DrawStatus.START.name();
 
     /**
      * 强制重抽，忽略状态
      */
     boolean force;
+
+    /**
+     * 同步执行抽奖
+     */
+    boolean syncRun;
 }

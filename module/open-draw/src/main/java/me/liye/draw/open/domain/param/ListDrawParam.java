@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import me.liye.open.share.rpc.BasePageQuery;
 
+import java.util.List;
+
 /**
  * Created by liye on 2025-09-22.
  */
@@ -17,6 +19,9 @@ import me.liye.open.share.rpc.BasePageQuery;
 @NoArgsConstructor
 public class ListDrawParam extends BasePageQuery {
     String name;
+    String status;
 
     Long activityId;
+
+    List<Long> activityIds;
 }

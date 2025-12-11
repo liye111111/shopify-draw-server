@@ -71,7 +71,6 @@ public class Ticket extends BaseDataObjectWithEmptyJsonColumn {
 
     String amount;
 
-    public enum TicketStatus {
-        PENDING, WIN, LOSE
-    }
+    ShopifyOrder shopifyOrder;
+
 }

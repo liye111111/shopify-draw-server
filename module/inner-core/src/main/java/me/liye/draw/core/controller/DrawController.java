@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.liye.draw.core.service.DrawService;
 import me.liye.draw.open.domain.Draw;
+import me.liye.draw.open.domain.Ticket;
 import me.liye.draw.open.domain.param.CreateDrawParam;
 import me.liye.draw.open.domain.param.ListDrawParam;
 import me.liye.open.share.rpc.RpcResult;
@@ -30,7 +31,14 @@ public class DrawController {
      */
     @PostMapping("/create")
     public RpcResult<Draw> create(@RequestBody CreateDrawParam param) {
-        return success(drawService.create(param));
+        Draw draw = drawService.create(param);
+        if (draw.getTickets() != null) {
+            // 去掉不需要返回的字段
+            for (Ticket ticket : draw.getTickets()) {
+                ticket.setShopifyOrder(null);
+            }
+        }
+        return success(draw);
     }
 
     @GetMapping("/list")

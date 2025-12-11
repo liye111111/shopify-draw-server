@@ -78,8 +78,10 @@ public class ActivityService {
     }
 
     public Activity getMatchedActivity(ShopifyOrder order) {
-        //TODO: 返回符合抽奖规则的活动
-        List<Activity> rows = list(ListActivityParam.builder().build());
+        List<Activity> rows = list(ListActivityParam.builder()
+                .shopId(order.getShopId())
+                .status(ActivityStatus.PUBLISHED.name())
+                .build());
         return rows.stream().filter(
                 it -> {
                     BigDecimal threshold = new BigDecimal(it.getMiniOrderSingleSpend());
@@ -116,7 +118,7 @@ public class ActivityService {
             double rewardVal = rewardTarget * percent;
 
             // 转成字符串
-            entry.setGmtAmount(String.valueOf((long) gmvVal));
+            entry.setGmvAmount(String.valueOf((long) gmvVal));
             entry.setRewardAmount(String.valueOf((long) rewardVal));
             entry.setPercent(Double.valueOf(percent * 100).intValue());
 

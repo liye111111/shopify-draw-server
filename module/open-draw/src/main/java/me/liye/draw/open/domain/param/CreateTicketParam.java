@@ -36,4 +36,6 @@ public class CreateTicketParam extends BaseDTO {
      * 抽奖金额
      */
     String amount;
+
+    String miniOrderSingleSpend;
 }
